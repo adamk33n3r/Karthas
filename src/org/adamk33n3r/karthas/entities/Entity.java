@@ -1,6 +1,10 @@
 package org.adamk33n3r.karthas.entities;
-
-public abstract class Entity {
+/**
+ * Entity is the superclass of the entities within Karthas
+ * @author adamk33n3r
+ *
+ */
+public abstract class Entity implements java.io.Serializable{
 	protected int posx, posy;
 	protected String name;
 
@@ -51,6 +55,6 @@ public abstract class Entity {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	public abstract String toString();
 }

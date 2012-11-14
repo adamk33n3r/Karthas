@@ -1,5 +1,10 @@
 package org.adamk33n3r.karthas.entities;
 
+/**
+ * An Object is a subclass of the Entity abstract class; It is the representation of an inanimate object.
+ * @author adamk33n3r
+ *
+ */
 public class Object extends Entity{
 	
 	public Object(int posx, int posy, String name){
