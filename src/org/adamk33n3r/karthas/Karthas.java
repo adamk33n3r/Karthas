@@ -1,23 +1,36 @@
 package org.adamk33n3r.karthas;
 
+// Java imports
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-import org.adamk33n3r.karthas.entities.*;
+// XStream for XML serialization
+import com.thoughtworks.xstream.XStream;
+
+// My own classes
+import org.adamk33n3r.karthas.entities.Actor;
+import org.adamk33n3r.karthas.entities.Entity;
 
 public class Karthas {
+	
+	// TODO make Menu interface/abstract class
+	// TODO make MainMenu class
+	
+	static final boolean XML = false;
 
 	static boolean run = false;
 	static String playerName = "";
 	static Actor player;
-	
+
 	static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 	/**
@@ -32,26 +45,35 @@ public class Karthas {
 		}
 
 		printSystemMessage(player);
-
+		
+		
 		while (run) {
-			printSystemMessage("1. ~Attack\n2. Print Stats\n3. Quit");
-			printPrompt();
-			switch(Integer.parseInt(getInput())){
+			printMainMenu(); // TODO Add colors
+			switch (Integer.parseInt(getInput())) {
 				case 1:
 					break;
 				case 2:
 					printSystemMessage(player);
 					break;
 				case 3:
+					save(player,XML);
+					break;
+				case 4:
 					run = false;
 					break;
 			}
 		}
-		save(player);
+		save(player, XML);
 	}
 
+	/**
+	 * Initializes program
+	 * 
+	 * @throws IOException
+	 */
+
 	private static void init() throws IOException {
-		
+
 		printSystemMessage("1. Load\n2. New Game");
 		int choice = 0;
 		while (choice != 1 && choice != 2) {
@@ -64,42 +86,75 @@ public class Karthas {
 			}
 		}
 		switch (choice) {
-		case 1:
-			printPrompt("Enter character name to load: ");
-			playerName = getInput();
-			while (!load(playerName)) {
-				printSystemError("Player not found. Try again.");
+			case 1:
 				printPrompt("Enter character name to load: ");
 				playerName = getInput();
-			}
-			break;
-		case 2:
-			printPrompt("Enter new character name: ");
-			playerName = getInput();
-			player = new Actor(0, 0, playerName, "Squire", 2, 1, 1, 0);
-			run = true;
-			break;
+				// playerName = "Binary";
+				while (!load(playerName,XML)) {
+					printSystemError("Player not found. Try again.");
+					printPrompt("Enter character name to load: ");
+					playerName = getInput();
+				}
+				break;
+			case 2:
+				printPrompt("Enter new character name: ");
+				playerName = getInput();
+				// playerName = "JAFelker";
+				player = new Actor(0, 0, playerName, "Squire", 2, 1, 1, 0);
+				run = true;
+				break;
 		}
 	}
 
-	private static boolean load(String playerName) {
+	/**
+	 * Loads saved data
+	 * 
+	 * @param playerName - The player name to be loaded
+	 * @return True if loaded successfully
+	 */
 
-		try {
-			ObjectInput in = new ObjectInputStream(new FileInputStream(playerName + ".bin"));
-			player = (Actor) in.readObject();
+	private static boolean load(String playerName, boolean Xstream) {
+		if (Xstream) {
+			XStream xstream = new XStream();
+			xstream.alias("player", Actor.class);
+			player = (Actor) xstream.fromXML(new File(playerName + ".xml"));
 			run = true;
-		} catch (IOException | ClassNotFoundException e) {
-			// System.err.println(e.getLocalizedMessage());
+		} else {
+			try {
+				ObjectInput in = new ObjectInputStream((new FileInputStream(playerName + ".bin")));
+				player = (Actor) in.readObject();
+				in.close();
+				run = true;
+			} catch (Exception e) {
+				System.err.println(e.getLocalizedMessage());
+			}
 		}
 		return run;
 	}
 
-	private static boolean save(Entity object) {
+	/**
+	 * Saves the current player
+	 * 
+	 * @param object The player
+	 * @return True if saved successfully
+	 */
+
+	private static boolean save(Entity object, boolean Xstream) {
 		try {
-			// Serialize data object to a file
-			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(object.getName() + ".bin"));
-			out.writeObject(object);
-			out.close();
+			if (Xstream) {
+				XStream xstream = new XStream();
+				xstream.alias("player", Actor.class);
+				BufferedWriter bw = new BufferedWriter(new FileWriter(object.getName() + ".xml"));
+				printSystemMessage("Saving...");
+				printSystemMessage(xstream.toXML(object));
+				xstream.toXML(object, bw);
+				bw.close();
+				printSystemMessage("Done!");
+			} else {
+				ObjectOutputStream out = new ObjectOutputStream((new FileOutputStream(object.getName() + ".bin")));
+				out.writeObject(object);
+				out.close();
+			}
 		} catch (IOException e) {
 			System.err.println(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -107,27 +162,62 @@ public class Karthas {
 		return true;
 	}
 	
-	private static String getInput(){
+	/**
+	 * Helper function to get input from user
+	 * @return String - User's input
+	 */
+
+	private static String getInput() {
 		String in;
 		try {
 			in = input.readLine();
 		} catch (IOException e) {
 			in = null;
-		}return in;
+		}
+		return in;
 	}
+	
+	/**
+	 * Helper function to print the Main Menu
+	 */
+	
+	private static void printMainMenu(){
+		printSystemMessage("1. ~Attack\n2. Print Stats\n3. Save\n4. Quit");
+		printPrompt();
+	}
+	
+	
+	/**
+	 * Helper function to print a message to the console
+	 * @param msg - Message to print
+	 */
 
-	private static void printSystemMessage(java.lang.Object msg) {
+	private static void printSystemMessage(Object msg) {
 		System.out.println(msg);
 	}
 	
-	private static void printPrompt(){
+	/**
+	 * Helper function to print a prompt
+	 */
+
+	private static void printPrompt() {
 		System.out.print(">>> ");
 	}
+	
+	/**
+	 * Helper function to print custom prompt
+	 * @param prompt
+	 */
 
 	private static void printPrompt(String prompt) {
 		System.out.print(prompt);
 	}
 
+	/**
+	 * Helper function to print an error message
+	 * @param error - Error to be printed
+	 */
+	
 	private static void printSystemError(String error) {
 		System.err.println("Error: " + error);
 	}

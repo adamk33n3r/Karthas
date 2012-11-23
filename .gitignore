@@ -1,5 +1,7 @@
 bin
+.bin
 .metadata
 *~
 *DS_Store*
 /Test
+/lib

@@ -1,10 +1,16 @@
 package org.adamk33n3r.karthas.entities;
+
 /**
  * Entity is the superclass of the entities within Karthas
  * @author adamk33n3r
  *
  */
-public abstract class Entity implements java.io.Serializable{
+
+public abstract class Entity implements java.io.Serializable {
+	/**
+	 * Version
+	 */
+	private static final long serialVersionUID = 0L;
 	protected int posx, posy;
 	protected String name;
 
@@ -13,7 +19,7 @@ public abstract class Entity implements java.io.Serializable{
 		this.posy = posy;
 		this.name = name;
 	}
-
+	
 	/**
 	 * @return the posx
 	 */

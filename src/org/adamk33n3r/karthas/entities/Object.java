@@ -7,6 +7,11 @@ package org.adamk33n3r.karthas.entities;
  */
 public class Object extends Entity{
 	
+	/**
+	 * Version
+	 */
+	private static final long serialVersionUID = 0L;
+
 	public Object(int posx, int posy, String name){
 		super(posx,posy,name);
 	}
