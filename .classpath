@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/xstream-hibernate-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xstream/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/lwjgl/lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/slick/lib/slick.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

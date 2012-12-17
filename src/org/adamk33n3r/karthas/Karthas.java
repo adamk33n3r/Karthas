@@ -19,8 +19,13 @@ import com.thoughtworks.xstream.XStream;
 // My own classes
 import org.adamk33n3r.karthas.entities.Actor;
 import org.adamk33n3r.karthas.entities.Entity;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
-public class Karthas {
+public class Karthas extends BasicGame{
 	
 	// TODO make Menu interface/abstract class
 	// TODO make MainMenu class
@@ -30,15 +35,26 @@ public class Karthas {
 	static boolean run = false;
 	static String playerName = "";
 	static Actor player;
+	
+	public Karthas(String title){
+		super(title);
+	}
 
 	static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 	/**
 	 * @param args
+	 * @throws SlickException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SlickException {
 		System.out.println("Starting up....\n");
-		try {
+		
+		AppGameContainer game = new AppGameContainer(new Karthas("Karthas: The Game"));
+		game.setDisplayMode(800, 600, false);
+		game.setTargetFrameRate(60);
+		game.start();
+		
+		/*try {
 			init();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -63,7 +79,7 @@ public class Karthas {
 					break;
 			}
 		}
-		save(player, XML);
+		save(player, XML);*/
 	}
 
 	/**
@@ -220,6 +236,24 @@ public class Karthas {
 	
 	private static void printSystemError(String error) {
 		System.err.println("Error: " + error);
+	}
+
+	@Override
+	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init(GameContainer arg0) throws SlickException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(GameContainer arg0, int arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
