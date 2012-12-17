@@ -16,14 +16,16 @@ import java.io.ObjectOutputStream;
 // XStream for XML serialization
 import com.thoughtworks.xstream.XStream;
 
-// My own classes
-import org.adamk33n3r.karthas.entities.Actor;
+// Slick2D
 import org.adamk33n3r.karthas.entities.Entity;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+
+// My own classes
+import org.adamk33n3r.karthas.entities.Actor;
 
 public class Karthas extends BasicGame{
 	
