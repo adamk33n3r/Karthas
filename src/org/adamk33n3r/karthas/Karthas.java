@@ -16,14 +16,15 @@ import java.io.ObjectOutputStream;
 // XStream for XML serialization
 import com.thoughtworks.xstream.XStream;
 
+// LWJGL
+import org.lwjgl.opengl.Display;
+
 // My own classes
 import org.adamk33n3r.karthas.entities.Actor;
 import org.adamk33n3r.karthas.entities.Entity;
+import org.adamk33n3r.karthas.gui.GUI;
 
 public class Karthas {
-	
-	// TODO make Menu interface/abstract class
-	// TODO make MainMenu class
 	
 	static final boolean XML = false;
 
@@ -38,17 +39,25 @@ public class Karthas {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Starting up....\n");
-		try {
+		/*try {
 			init();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 
-		printSystemMessage(player);
+		//printSystemMessage(player);
 		
+		GUI.create("Karthas", 800, 600);
 		
-		while (run) {
-			printMainMenu(); // TODO Add colors
+		while (GUI.isRunning()) {
+			GUI.update();
+			GUI.render();
+			Display.sync(60);
+			
+			if(Display.isCloseRequested())
+				GUI.shutdown();
+			
+			/*printMainMenu(); // TODO Add colors
 			switch (Integer.parseInt(getInput())) {
 				case 1:
 					break;
@@ -61,9 +70,13 @@ public class Karthas {
 				case 4:
 					run = false;
 					break;
-			}
+			}*/
 		}
-		save(player, XML);
+		GUI.destroy();
+		
+		//save(player, XML);
+		System.exit(0);
+
 	}
 
 	/**
@@ -72,6 +85,7 @@ public class Karthas {
 	 * @throws IOException
 	 */
 
+	@SuppressWarnings("unused")
 	private static void init() throws IOException {
 
 		printSystemMessage("1. Load\n2. New Game");
@@ -139,6 +153,7 @@ public class Karthas {
 	 * @return True if saved successfully
 	 */
 
+	@SuppressWarnings("unused")
 	private static boolean save(Entity object, boolean Xstream) {
 		try {
 			if (Xstream) {
@@ -181,6 +196,7 @@ public class Karthas {
 	 * Helper function to print the Main Menu
 	 */
 	
+	@SuppressWarnings("unused")
 	private static void printMainMenu(){
 		printSystemMessage("1. ~Attack\n2. Print Stats\n3. Save\n4. Quit");
 		printPrompt();
@@ -221,5 +237,5 @@ public class Karthas {
 	private static void printSystemError(String error) {
 		System.err.println("Error: " + error);
 	}
-
+	
 }
