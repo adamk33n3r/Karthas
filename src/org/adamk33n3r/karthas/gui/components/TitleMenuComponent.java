@@ -26,13 +26,12 @@ public class TitleMenuComponent extends MenuComponent {
 
 			@Override
 			public void execute() {
-				GUI.getCurrentState().getMenu().items.get(1).disable();
-				/*String in = GUI.getInput("Enter character to load");
+				String in = GUI.getInput("Enter character to load");
 				if(!in.equals("")) {
 					Karthas.load(in, true);
 					if (Karthas.getPlayer() != null)
 						GUI.changeTo("Main");
-				}*/
+				}
 			}
 			
 		}), new MenuItem("Quit", MenuItemAction.EXIT));

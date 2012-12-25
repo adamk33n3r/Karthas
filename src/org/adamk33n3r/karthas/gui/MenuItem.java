@@ -34,6 +34,12 @@ public class MenuItem implements Renderable, Executable {
 	 */
 	public MenuItem(String text) {
 		this.text = text;
+		this.color = GUI.DEFAULT_MENU_COLOR;
+		this.selectedColor = GUI.DEFAULT_SELECTED_MENU_COLOR;
+		this.disabledColor = GUI.DEFAULT_DISABLED_COLOR;
+		this.borderColor = GUI.DEFAULT_BORDER_COLOR;
+		this.fontColor = GUI.DEFAULT_FONT_COLOR;
+		this.selectedFontColor = GUI.DEFAULT_SELECTED_FONT_COLOR;
 		if (!text.equals("Go Back")) {
 			this.function = new MenuItemAction() {
 				@Override
