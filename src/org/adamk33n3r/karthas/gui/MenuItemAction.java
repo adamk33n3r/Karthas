@@ -25,8 +25,14 @@ public interface MenuItemAction extends Executable {
 
 		@Override
 		public void execute() {
-			System.out.println("Exiting...");
-			GUI.shutdown();
+			if(confirm()) {
+				System.out.println("Exiting...");
+				GUI.shutdown();
+			}
+		}
+		
+		private boolean confirm() {
+			return Console.confirm();
 		}
 
 	};

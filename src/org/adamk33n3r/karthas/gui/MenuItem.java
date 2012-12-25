@@ -1,5 +1,7 @@
 package org.adamk33n3r.karthas.gui;
 
+import java.awt.Point;
+
 import org.adamk33n3r.karthas.Executable;
 import org.adamk33n3r.karthas.Renderable;
 import org.newdawn.slick.Color;
@@ -14,10 +16,17 @@ public class MenuItem implements Renderable, Executable {
 
 	String text = "default";
 	int position;
+	
+	private Color color, selectedColor;
+	private Color fontColor, selectedFontColor;
+	private Color disabledColor, borderColor;
+	
+	boolean selected;
+	private boolean disabled;
 
 	private MenuItemAction function = null;
 
-	private Menu parentMenu = null;
+	protected Menu parentMenu = null;
 	
 	/**
 	 * If {@code text} is "Go Back", creates a {@code MenuItem} with a function to go back to the previous menu. Otherwise, makes a {@code MenuItem} with no action
@@ -49,14 +58,44 @@ public class MenuItem implements Renderable, Executable {
 	 */
 	public MenuItem(String text, MenuItemAction function) {
 		this.text = text;
+		this.color = GUI.DEFAULT_MENU_COLOR;
+		this.selectedColor = GUI.DEFAULT_SELECTED_MENU_COLOR;
+		this.disabledColor = GUI.DEFAULT_DISABLED_COLOR;
+		this.borderColor = GUI.DEFAULT_BORDER_COLOR;
+		this.fontColor = GUI.DEFAULT_FONT_COLOR;
+		this.selectedFontColor = GUI.DEFAULT_SELECTED_FONT_COLOR;
 		this.function = function;
 	}
-
+	
 	/**
-	 * Sets the function for this {@code MenuItem}
-	 * @param function - The function to be set
+	 * Creates a new {@code MenuItem}
+	 * @param text - The text to show in the {@code MenuItem}
+	 * @param function - The function that by pressing the return key on the {@code MenuItem} should be executed
 	 */
-	public void setFunction(MenuItemAction function) {
+	public MenuItem(String text, Color color, Color selectedColor, Color disabledColor, Color borderColor, MenuItemAction function) {
+		this.text = text;
+		this.color = color;
+		this.selectedColor = selectedColor;
+		this.disabledColor = disabledColor;
+		this.borderColor = borderColor;
+		this.fontColor = GUI.DEFAULT_FONT_COLOR;
+		this.selectedFontColor = GUI.DEFAULT_SELECTED_FONT_COLOR;
+		this.function = function;
+	}
+	
+	/**
+	 * Creates a new {@code MenuItem}
+	 * @param text - The text to show in the {@code MenuItem}
+	 * @param function - The function that by pressing the return key on the {@code MenuItem} should be executed
+	 */
+	public MenuItem(String text, Color color, Color selectedColor, Color disabledColor, Color borderColor, Color fontColor, Color selectedFontColor, MenuItemAction function) {
+		this.text = text;
+		this.color = color;
+		this.selectedColor = selectedColor;
+		this.disabledColor = disabledColor;
+		this.borderColor = borderColor;
+		this.fontColor = fontColor;
+		this.selectedFontColor = selectedFontColor;
 		this.function = function;
 	}
 	
@@ -68,13 +107,30 @@ public class MenuItem implements Renderable, Executable {
 		this.parentMenu = parent;
 	}
 	
+	public void enable() {
+		disabled = false;
+	}
+	
+	public void disable() {
+		disabled = true;
+	}
+	
 	/**
 	 * Renders the {@code MenuItem}
 	 */
 	@Override
 	public void render() {
-		int y = GUI.height - parentMenu.height - 40 + (position * 25);
-		GUI.drawString(50 + 5, y - 2, text, Color.yellow, GUI.font);
+		int y = GUI.height - parentMenu.getHeight() - 40 + (position * 25);
+		if(disabled)
+			GUI.drawRect(50, y, 50 + parentMenu.getWidth(), y + 20, this.disabledColor, 5, this.borderColor);
+		else
+			GUI.drawRect(50, y, 50 + parentMenu.getWidth(), y + 20, this.color, 5, this.borderColor);
+		if(selected) {
+			GUI.drawPolygon(this.selectedColor, new Point(50, y), new Point(50 + parentMenu.getWidth() - 20, y), new Point(50 + parentMenu.getWidth(), y + 20), new Point(50 + 20, y + 20));
+			GUI.drawString(50 + 35, y - 6, text, this.selectedFontColor, GUI.font);
+		} else {
+			GUI.drawString(50 + 35, y - 6, text, this.fontColor, GUI.font);
+		}
 	}
 
 	/**

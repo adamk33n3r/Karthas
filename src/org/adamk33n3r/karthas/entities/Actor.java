@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.adamk33n3r.karthas.gui.GUI;
+
 /**
  * An Actor is a subclass of the Entity abstract class; It is the representation of a person or monster.
  * 
@@ -14,8 +16,8 @@ import java.util.HashMap;
 public class Actor extends Entity {
 
 	private static final long serialVersionUID = -3138869789221274698L;
-	private static final int NUM_OF_FIELDS = 3;
-	private int version = 3;
+	private static final int NUM_OF_FIELDS = 4;
+	private int version = 4;
 	private String prefix;
 	private HashMap<String, Integer> attributes;
 	private Actor spouse;
@@ -176,17 +178,16 @@ public class Actor extends Entity {
 	private void readObject(ObjectInputStream ois) {
 		try {
 			ois.defaultReadObject();
-			System.out.println(this.version + " compared to " + Actor.NUM_OF_FIELDS);
+			System.out.println(this.version + " compared to " + Actor.NUM_OF_FIELDS + " fields");
 			if (this.version < Actor.NUM_OF_FIELDS) {
-				System.out.println("Old version");
+				System.err.println("Old version");
+				GUI.shutdown();
 			} else if (this.version > Actor.NUM_OF_FIELDS) {
 
 			}
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

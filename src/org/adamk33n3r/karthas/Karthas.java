@@ -51,8 +51,7 @@ public class Karthas {
 		
 		while (GUI.isRunning()) {
 			GUI.update();
-			GUI.render();
-			Display.sync(60);
+			GUI.render(false);
 			
 			if(Display.isCloseRequested())
 				GUI.shutdown();
@@ -85,39 +84,10 @@ public class Karthas {
 	 * @throws IOException
 	 */
 
-	@SuppressWarnings("unused")
-	private static void init() throws IOException {
-
-		printSystemMessage("1. Load\n2. New Game");
-		int choice = 0;
-		while (choice != 1 && choice != 2) {
-			printSystemMessage("Please enter 1 or 2");
-			printPrompt(">>> ");
-			try {
-				choice = Integer.parseInt(getInput());
-			} catch (NumberFormatException e) {
-				printSystemError("NumberFormatException");
-			}
-		}
-		switch (choice) {
-			case 1:
-				printPrompt("Enter character name to load: ");
-				playerName = getInput();
-				// playerName = "Binary";
-				while (!load(playerName,XML)) {
-					printSystemError("Player not found. Try again.");
-					printPrompt("Enter character name to load: ");
-					playerName = getInput();
-				}
-				break;
-			case 2:
-				printPrompt("Enter new character name: ");
-				playerName = getInput();
-				// playerName = "JAFelker";
-				player = new Actor(0, 0, playerName, "Squire", 2, 1, 1, 0);
-				run = true;
-				break;
-		}
+	public static Actor init(String name) {
+		playerName = name;
+		player = new Actor(0, 0, playerName, "Squire", 2, 1, 1, 0);
+		return player;
 	}
 
 	/**
@@ -127,11 +97,18 @@ public class Karthas {
 	 * @return True if loaded successfully
 	 */
 
-	private static boolean load(String playerName, boolean Xstream) {
+	public static boolean load(String playerName, boolean Xstream) {
 		if (Xstream) {
 			XStream xstream = new XStream();
 			xstream.alias("player", Actor.class);
-			player = (Actor) xstream.fromXML(new File(playerName + ".xml"));
+			try {			printSystemMessage("before");
+
+				//player = (Actor) xstream.fromXML(new File(playerName));
+				player = (Actor) xstream.fromXML(new File(playerName + ".xml"));
+			}catch (Exception e) {
+				System.err.println(String.format("Save %s.xml does not exist", playerName));
+			}			printSystemMessage("after");
+
 			run = true;
 		} else {
 			try {
@@ -153,8 +130,7 @@ public class Karthas {
 	 * @return True if saved successfully
 	 */
 
-	@SuppressWarnings("unused")
-	private static boolean save(Entity object, boolean Xstream) {
+	public static boolean save(Entity object, boolean Xstream) {
 		try {
 			if (Xstream) {
 				XStream xstream = new XStream();
@@ -236,6 +212,18 @@ public class Karthas {
 	
 	private static void printSystemError(String error) {
 		System.err.println("Error: " + error);
+	}
+
+	public static Object getPlayer() {
+		return player;
+	}
+
+	public static void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

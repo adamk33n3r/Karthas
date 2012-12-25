@@ -1,13 +1,15 @@
 package org.adamk33n3r.karthas.gui;
 
 // Java import
+import java.awt.Point;
 import java.util.HashMap;
 
 // LWGL imports
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.*;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+
 import static org.lwjgl.opengl.GL11.*;
 
 // Slick import for font rendering
@@ -18,25 +20,34 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
 public class GUI {
+	
+	public static final Color DEFAULT_MENU_COLOR = Color.blue;
+	public static final Color DEFAULT_DISABLED_COLOR = Color.gray;
+	public static final Color DEFAULT_BORDER_COLOR = Color.gray;
+	public static final Color DEFAULT_FONT_COLOR = Color.yellow;
+	public static final Color DEFAULT_SELECTED_MENU_COLOR = Color.red;
+	public static final Color DEFAULT_SELECTED_FONT_COLOR = Color.yellow;
 
 	static GUI gui = null;
 
 	static boolean running = true;
 
-	static HashMap<String, Menu> menuMap;
-	static Menu curMenu = null;
+	static HashMap<String, State> stateMap;
+	static State curState = null;
 
-	static int width, height;
+	public static int width, height;
 
-	static AngelCodeFont font = null;
+	public static AngelCodeFont font = null;
 
 	private GUI(String title, int width, int height) {
 		GUI.width = width;
 		GUI.height = height;
 
-		menuMap = MenuCreator.create();
+		//menuMap = MenuBuilder.create();
+		
+		stateMap = StateBuilder.create();
 
-		curMenu = menuMap.get("Main");
+		curState = stateMap.get("Title");
 
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
@@ -72,7 +83,10 @@ public class GUI {
 		glMatrixMode(GL_MODELVIEW);
 
 		try {
-			font = new AngelCodeFont("resources/Impact24.fnt", new Image("resources/Impact24.png"));
+			//font = new AngelCodeFont("resources/Impact24.fnt", new Image("resources/Impact24.png"));
+			//font = new AngelCodeFont("resources/ComicSans32.fnt", new Image("resources/ComicSans32.png"));
+			//font = new AngelCodeFont("resources/ComicSans24Bold.fnt", new Image("resources/ComicSans24Bold.png"));
+			font = new AngelCodeFont("resources/Chalkduster24.fnt", new Image("resources/Chalkduster24.png"));
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -100,23 +114,27 @@ public class GUI {
 	public static void destroy() {
 		Display.destroy();
 	}
+	
+	public static State getCurrentState() {
+		return curState;
+	}
 
 	/**
 	 * Changes the current menu
 	 * @param menu - The {@link Menu} to change to
 	 */
-	public static void changeTo(Menu menu) {
-		curMenu = menu;
+	public static void changeTo(State state) {
+		curState = state;
 	}
 
 	/**
 	 * Changes the current menu
 	 * @param menuName - The name of the {@code Menu} to change to
 	 */
-	public static void changeTo(String menuName) {
-		Menu newMenu = menuMap.get(menuName);
-		if (newMenu != null)
-			changeTo(newMenu);
+	public static void changeTo(String stateName) {
+		State newState = stateMap.get(stateName);
+		if (newState != null)
+			changeTo(newState);
 	}
 
 	/**
@@ -177,36 +195,9 @@ public class GUI {
 			System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
 		}
 	}
-
-	/**
-	 * Updates. Keyboard events
-	 */
-	public static void update() {
-		while (Keyboard.next()) {
-			if (Keyboard.getEventKeyState()) {
-				int key = Keyboard.getEventKey();
-				if (key == Keyboard.KEY_DOWN)
-					curMenu.nextItem();
-				else if (key == Keyboard.KEY_UP)
-					curMenu.prevItem();
-				else if (key == Keyboard.KEY_RETURN) {
-					curMenu.items.get(curMenu.selectedItem).execute();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Renders the {@code GUI}
-	 */
-	public static void render() {
-
-		drawString(100, 100, "Hey Sexy", Color.yellow, font);
-
-		curMenu.render();
-		Display.update();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	public static void renderState() {
+		curState.render();
 	}
 
 	/**
@@ -219,8 +210,16 @@ public class GUI {
 	 */
 	public static void drawString(int x, int y, String string, Color color, Font font) {
 		glEnable(GL_TEXTURE_2D);
-
+		
 		font.drawString(x, y, string, color);
+
+		glDisable(GL_TEXTURE_2D);
+	}
+	
+	public static void drawStringCentered(int x, int y, String string, Color color, Font font) {
+		glEnable(GL_TEXTURE_2D);
+		
+		font.drawString(x - font.getWidth(string) / 2, y, string, color);
 
 		glDisable(GL_TEXTURE_2D);
 	}
@@ -228,6 +227,19 @@ public class GUI {
 	public static void drawRect(int x1, int y1, int x2, int y2, Color color) {
 		setColor(color);
 		glRecti(x1, y1, x2, y2);
+	}
+	
+	public static void drawRect(int x1, int y1, int x2, int y2, Color color, int borderWidth, Color borderColor) {
+		drawRect(x1 - borderWidth, y1 - borderWidth, x2 + borderWidth, y2 + borderWidth, borderColor);
+		drawRect(x1, y1, x2, y2, color);
+	}
+	
+	public static void drawPolygon(Color color, Point... points) {
+		setColor(color);
+		glBegin(GL11.GL_POLYGON);
+		for(int i = 0; i < points.length; i++)
+			glVertex2f(points[i].x, points[i].y);
+		glEnd();
 	}
 
 	/**
@@ -241,8 +253,8 @@ public class GUI {
 	/**
 	 * Gets input from the user using {@link Console}
 	 */
-	public static void getInput() {
-		Console.start();
+	public static String getInput(String prompt) {
+		Console.start(prompt);
 		while (Console.isRunning()) {
 			if(Display.isCloseRequested()) {
 				shutdown();
@@ -250,7 +262,31 @@ public class GUI {
 			}
 			Console.update();
 			Console.render();
-		}
+		}return Console.getInput();
+	}
+	
+	public static boolean confirm() {
+		return Console.confirm();
+	}
+	
+	/**
+	 * Updates. Keyboard events
+	 */
+	public static void update() {
+		curState.update();
+	}
+
+	/**
+	 * Renders the {@code GUI}
+	 * @param onlyUpdate If true, will only update display
+	 */
+	public static void render(boolean updateOnly) {                  //TODO Need to make "states" to contain each state e.g. title screen, main menu, attack menu
+		//curState.render();
+		if(!updateOnly)
+			curState.render();
+		Display.update();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Display.sync(60);
 	}
 
 }
