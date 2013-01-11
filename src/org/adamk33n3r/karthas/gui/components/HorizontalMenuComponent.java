@@ -17,7 +17,8 @@ public abstract class HorizontalMenuComponent extends MenuComponent {
 				else if (key == Keyboard.KEY_LEFT)
 					menu.prevItem();
 				else if (key == Keyboard.KEY_RETURN) {
-					menu.getSelected().execute();
+					if(!Keyboard.isRepeatEvent())
+						menu.getSelected().execute();
 				}
 			}
 		}

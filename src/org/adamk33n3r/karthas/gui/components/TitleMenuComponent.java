@@ -18,10 +18,10 @@ public class TitleMenuComponent extends MenuComponent {
 				if(!in.equals("")) {
 					Actor player = Karthas.init(in);
 					Karthas.save(player, true);
+					System.out.println("dsdfa");
 					GUI.changeTo("Main");
 				}
 			}
-			
 		}), new MenuItem("Load Game", new MenuItemAction() {
 
 			@Override

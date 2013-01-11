@@ -30,7 +30,8 @@ public abstract class MenuComponent extends Component {
 				else if (key == Keyboard.KEY_UP)
 					menu.prevItem();
 				else if (key == Keyboard.KEY_RETURN) {
-					menu.getSelected().execute();
+					if(!Keyboard.isRepeatEvent())
+						menu.getSelected().execute();
 				}
 			}
 		}

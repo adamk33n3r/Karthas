@@ -64,7 +64,6 @@ public class Console {
 	}
 
 	public static void update() {
-		Keyboard.enableRepeatEvents(true);
 		if (Keyboard.next() && Keyboard.getEventKeyState()) {
 			int key = Keyboard.getEventKey();
 			switch (key) {
@@ -171,7 +170,6 @@ public class Console {
 			}
 			if (text.length() > 25)
 				text = text.substring(0, text.length() - 1);
-			Keyboard.enableRepeatEvents(false);
 		}
 	}
 

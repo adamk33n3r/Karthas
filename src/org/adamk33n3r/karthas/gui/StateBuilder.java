@@ -14,7 +14,7 @@ public class StateBuilder {
 		
 		stateMap = new HashMap<String, State>();
 		
-		stateMap.put("Title", new State(new LogoComponent("loc"), new TitleMenuComponent(), new TitleTextComponent()));
+		stateMap.put("Title", new State(new LogoComponent("resources/MenuItemBack.png"), new TitleMenuComponent(), new TitleTextComponent()));
 		
 		stateMap.put("Main", new State(new MainMenuComponent()));
 		

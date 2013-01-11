@@ -4,8 +4,11 @@ package org.adamk33n3r.karthas.gui;
 import java.awt.Point;
 import java.util.HashMap;
 
+import org.adamk33n3r.karthas.ResizableImage;
 // LWGL imports
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -25,15 +28,21 @@ public class GUI {
 	public static final Color DEFAULT_DISABLED_COLOR = Color.gray;
 	public static final Color DEFAULT_BORDER_COLOR = Color.gray;
 	public static final Color DEFAULT_FONT_COLOR = Color.yellow;
-	public static final Color DEFAULT_SELECTED_MENU_COLOR = Color.red;
-	public static final Color DEFAULT_SELECTED_FONT_COLOR = Color.yellow;
+	public static final Color DEFAULT_SELECTED_MENU_COLOR = new Color(255,225,0);
+	public static final Color DEFAULT_SELECTED_FONT_COLOR = Color.orange;
 
 	static GUI gui = null;
 
 	static boolean running = true;
+	
+	private static long lastFrame;
+	private static int fps, curFPS;
+	private static double delta;
+	private static long lastTime;
 
 	static HashMap<String, State> stateMap;
 	static State curState = null;
+	static boolean console = false;
 
 	public static int width, height;
 
@@ -43,16 +52,9 @@ public class GUI {
 		GUI.width = width;
 		GUI.height = height;
 
-		//menuMap = MenuBuilder.create();
-		
-		stateMap = StateBuilder.create();
-
-		curState = stateMap.get("Title");
-
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setTitle(title);
-			Display.setVSyncEnabled(true);
 			Display.create();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -66,6 +68,7 @@ public class GUI {
 	 * @param height - The height of the {@code GUI}
 	 */
 	public static void create(String title, int width, int height) {
+		Keyboard.enableRepeatEvents(true);
 		gui = new GUI(title, width, height);
 		glShadeModel(GL_SMOOTH);
 		glDisable(GL_LIGHTING);
@@ -82,6 +85,9 @@ public class GUI {
 		glOrtho(0, 800, 600, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
 
+		stateMap = StateBuilder.create();
+		curState = stateMap.get("Title");
+		
 		try {
 			//font = new AngelCodeFont("resources/Impact24.fnt", new Image("resources/Impact24.png"));
 			//font = new AngelCodeFont("resources/ComicSans32.fnt", new Image("resources/ComicSans32.png"));
@@ -241,6 +247,16 @@ public class GUI {
 			glVertex2f(points[i].x, points[i].y);
 		glEnd();
 	}
+	
+	public static void drawImage(Image img, int x, int y) {
+		img.draw(x, y);
+		glDisable(GL_TEXTURE_2D);
+	}
+	
+	public static void drawResizableImage(ResizableImage img, int x, int y, int width, int height) {
+		img.getImage(width, height).draw(x, y);
+		glDisable(GL_TEXTURE_2D);
+	}
 
 	/**
 	 * Sets the color of the {@code GUI} rendering
@@ -254,6 +270,7 @@ public class GUI {
 	 * Gets input from the user using {@link Console}
 	 */
 	public static String getInput(String prompt) {
+		console = true;
 		Console.start(prompt);
 		while (Console.isRunning()) {
 			if(Display.isCloseRequested()) {
@@ -262,7 +279,8 @@ public class GUI {
 			}
 			Console.update();
 			Console.render();
-		}return Console.getInput();
+		}console = false;
+		return Console.getInput();
 	}
 	
 	public static boolean confirm() {
@@ -273,20 +291,65 @@ public class GUI {
 	 * Updates. Keyboard events
 	 */
 	public static void update() {
-		curState.update();
+		if(getTime() - lastTime > 1000) {
+			lastTime+=1000;
+			fps = curFPS;
+			curFPS = 0;
+		}curFPS++;
+		if (!console)
+			curState.update();
+		Display.setTitle("Karthas - FPS: " + getFPS());
 	}
 
 	/**
 	 * Renders the {@code GUI}
 	 * @param onlyUpdate If true, will only update display
 	 */
-	public static void render(boolean updateOnly) {                  //TODO Need to make "states" to contain each state e.g. title screen, main menu, attack menu
-		//curState.render();
+	public static void render(boolean updateOnly) { //TODO Render "layers" of states
+		setDelta();
 		if(!updateOnly)
 			curState.render();
 		Display.update();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		Display.sync(60);
+	}
+	
+	/**
+	 * Get the accurate system time
+	 * 
+	 * @return The system time in milliseconds
+	 */
+	public static long getTime() {
+	    return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+	}
+	
+	/**
+	 * Returns the delta
+	 * @return delta
+	 */
+	
+	public static double getDelta() {
+		return delta;
+	}
+	
+	/** 
+	 * Calculate how many milliseconds have passed 
+	 * since last frame.
+	 */
+	private static void setDelta() {
+	    long time = getTime();
+	    double delta = time - lastFrame;
+	    lastFrame = time;
+	    GUI.delta = delta;
+	}
+	
+	public static int getFPS() {
+		return fps;
+	}
+	
+	public static void initTime() {
+		lastTime = getTime();
+		lastFrame = getTime();
 	}
 
 }

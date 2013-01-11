@@ -1,8 +1,9 @@
 package org.adamk33n3r.karthas.gui;
 
-import java.awt.Point;
-
+import org.adamk33n3r.karthas.ResizableImage;
+import org.adamk33n3r.karthas.Resources;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 public class HorizontalMenuItem extends MenuItem {
 
@@ -16,16 +17,19 @@ public class HorizontalMenuItem extends MenuItem {
 	
 	@Override
 	public void render() {
+		Color fontColor = this.fontColor;
 		int y = GUI.height / 2;
 		int midpoint = GUI.width / parentMenu.items.size();
 		int firstpoint = midpoint / 2;
 		int size = firstpoint * 6 / 7;
-		int x1 = (firstpoint * (1 + position * 2));
-		int x2 = x1 + size / 2;
-		GUI.drawRect(x1 - size / 2, y, x2, y + 20, Color.blue, 5, Color.gray);
-		if(selected)
-			GUI.drawPolygon(Color.red, new Point(x1 - size / 2, y), new Point(x1 + size / 2 - 20, y), new Point(x1 + size / 2, y + 20), new Point(x1 - size / 2 + 20, y + 20));
-		GUI.drawStringCentered(x1, y - 6, text, Color.yellow, Console.font);
+		int x1 = (firstpoint * (1 + position * 2)) - size / 2;
+		int x2 = x1 + size;
+		GUI.drawImage((Image) ((ResizableImage) Resources.get("ComponentBack")).build(size, 25), x1, y);
+		if(selected) {
+			GUI.drawRect(x1 + 5, y + 5, x2, y + 25, this.selectedColor);
+			fontColor = this.selectedFontColor;
+		}
+		GUI.drawStringCentered(x1 + size / 2, y, text, fontColor, Console.font);
 	}
 
 }

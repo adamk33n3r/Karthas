@@ -1,7 +1,10 @@
 package org.adamk33n3r.karthas.gui.components;
 
+import org.adamk33n3r.karthas.ResizableImage;
+import org.adamk33n3r.karthas.Resources;
 import org.adamk33n3r.karthas.gui.GUI;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 public class TitleTextComponent extends TextComponent{
 	
@@ -18,7 +21,11 @@ public class TitleTextComponent extends TextComponent{
 
 	@Override
 	public void render() {
-		GUI.drawStringCentered(GUI.width / 2, 100, text, Color.yellow, GUI.font);
+		int size = GUI.font.getWidth(text);
+		int x1 = GUI.width / 2 - size / 2;
+		Resources.set("TitleTextBack", ((ResizableImage) Resources.get("ComponentBack")).build(size + 25, GUI.font.getLineHeight()));
+		GUI.drawImage((Image) Resources.get("TitleTextBack"), x1 - 15, 94);
+		GUI.drawStringCentered(x1 + size / 2, 100, text, Color.yellow, GUI.font);
 	}
 
 }

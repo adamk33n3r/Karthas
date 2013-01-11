@@ -1,6 +1,8 @@
 package org.adamk33n3r.karthas;
 
-// Java imports
+import java.applet.Applet;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +18,7 @@ import java.io.ObjectOutputStream;
 // XStream for XML serialization
 import com.thoughtworks.xstream.XStream;
 
+import org.lwjgl.LWJGLException;
 // LWJGL
 import org.lwjgl.opengl.Display;
 
@@ -24,8 +27,10 @@ import org.adamk33n3r.karthas.entities.Actor;
 import org.adamk33n3r.karthas.entities.Entity;
 import org.adamk33n3r.karthas.gui.GUI;
 
-public class Karthas {
-	
+public class Karthas extends Applet{
+
+	private static final long serialVersionUID = 2577990505555084916L;
+
 	static final boolean XML = false;
 
 	static boolean run = false;
@@ -33,11 +38,74 @@ public class Karthas {
 	static Actor player;
 
 	static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-
+	Canvas display_parent;
+	Thread gameThread;
+	
+	public void startGame() {
+		gameThread = new Thread() {
+			public void run() {
+				try {
+					Display.setParent(display_parent);
+				} catch (LWJGLException e) {
+					e.printStackTrace();
+				}
+				GUI.create("Karthas", 800, 600);
+				loop();
+			}
+		};
+		gameThread.start();
+	}
+	
+	public void stopGame() {
+		try {
+			gameThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void start() {
+		
+	}
+	
+	public void stop() {
+		
+	}
+	
+	public void destroy() {
+		remove(display_parent);
+		super.destroy();
+	}
+	
+	public void init() {
+		setLayout(new BorderLayout());
+		try {
+			display_parent = new Canvas() {
+				public final void addNotify() {
+					super.addNotify();
+					startGame();
+				}
+				public final void removeNotify() {
+					stopGame();
+					super.removeNotify();
+				}
+			};
+			display_parent.setSize(GUI.width, GUI.height);
+			add(display_parent);
+			display_parent.setFocusable(true);
+			display_parent.requestFocus();
+			display_parent.setIgnoreRepaint(true);
+			setVisible(true);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Unable to create display");
+		}
+	}
+	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public void loop() {
 		System.out.println("Starting up....\n");
 		/*try {
 			init();
@@ -46,8 +114,9 @@ public class Karthas {
 		}*/
 
 		//printSystemMessage(player);
-		
-		GUI.create("Karthas", 800, 600);
+
+		Resources.load();
+		GUI.initTime();
 		
 		while (GUI.isRunning()) {
 			GUI.update();
@@ -56,7 +125,7 @@ public class Karthas {
 			if(Display.isCloseRequested())
 				GUI.shutdown();
 			
-			/*printMainMenu(); // TODO Add colors
+			/*printMainMenu();
 			switch (Integer.parseInt(getInput())) {
 				case 1:
 					break;
@@ -154,21 +223,6 @@ public class Karthas {
 	}
 	
 	/**
-	 * Helper function to get input from user
-	 * @return String - User's input
-	 */
-
-	private static String getInput() {
-		String in;
-		try {
-			in = input.readLine();
-		} catch (IOException e) {
-			in = null;
-		}
-		return in;
-	}
-	
-	/**
 	 * Helper function to print the Main Menu
 	 */
 	
@@ -195,22 +249,13 @@ public class Karthas {
 	private static void printPrompt() {
 		System.out.print(">>> ");
 	}
-	
-	/**
-	 * Helper function to print custom prompt
-	 * @param prompt
-	 */
-
-	private static void printPrompt(String prompt) {
-		System.out.print(prompt);
-	}
 
 	/**
 	 * Helper function to print an error message
 	 * @param error - Error to be printed
 	 */
 	
-	private static void printSystemError(String error) {
+	public static void printSystemError(String error) {
 		System.err.println("Error: " + error);
 	}
 

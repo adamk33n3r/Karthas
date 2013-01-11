@@ -28,7 +28,7 @@ public class Menu implements Renderable {
 	 * @param items - Items to add to the menu
 	 */
 	public Menu(State parent, MenuItem... items) {
-		setWidth(GUI.width - 100);
+		setWidth(300);
 		this.parent = parent;
 		if (items.length > 0) {
 			for (int i = 0; i < items.length; i++) {
