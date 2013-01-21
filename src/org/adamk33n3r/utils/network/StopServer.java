@@ -25,8 +25,6 @@ public class StopServer implements ServerInfo {
 			System.out.println("...sending stop message...");
 			messageSender.send(new StopServer());
 			System.out.println("...sent");
-			// close the ObjectContainer
-			objectContainer.close();
 		}
 	}
 }
