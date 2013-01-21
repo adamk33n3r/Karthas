@@ -18,7 +18,6 @@ public class Actor extends Entity {
 	private static final long serialVersionUID = -3138869789221274698L;
 	private static final int NUM_OF_FIELDS = 4;
 	private int version = 4;
-	private int penis = 12;
 	private String prefix;
 	private HashMap<String, Integer> attributes;
 	private Actor spouse;
