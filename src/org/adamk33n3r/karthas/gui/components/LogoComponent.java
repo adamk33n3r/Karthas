@@ -1,8 +1,10 @@
 package org.adamk33n3r.karthas.gui.components;
 
-import org.adamk33n3r.karthas.gui.GUI;
+// Slick Image import
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+
+// My import
+import org.adamk33n3r.karthas.gui.GUI;
 
 public class LogoComponent extends Component {
 	
@@ -11,13 +13,8 @@ public class LogoComponent extends Component {
 	private double direction = -600;
 	private double speed = 600;
 	
-	public LogoComponent(String pathToImage) {
-		try {
-			logo = new Image(pathToImage);
-		} catch (SlickException e) {
-			System.err.println("Could not find image");
-			e.printStackTrace();
-		}
+	public LogoComponent(Image image) {
+		logo = image;
 	}
 	
 	@Override

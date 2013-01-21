@@ -7,7 +7,7 @@ import org.adamk33n3r.karthas.gui.MenuItemAction;
 public class MainMenuComponent extends MenuComponent {
 	
 	public MainMenuComponent() {
-		menu = new Menu(null, new MenuItem("Attack"), new MenuItem("Save"), new MenuItem("Quit", MenuItemAction.EXIT));
+		menu = new Menu(new MenuItem("Attack"), new MenuItem("Save"), new MenuItem("Quit", MenuItemAction.EXIT));
 	}
 
 }

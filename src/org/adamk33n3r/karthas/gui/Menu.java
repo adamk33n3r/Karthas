@@ -20,16 +20,13 @@ public class Menu implements Renderable {
 	private int width;
 	private int height;
 	
-	private State parent;
-	
 	/**
 	 * Creates a {@code Menu}
 	 * @param parent This menu's parent menu. {@code null} if none.
 	 * @param items - Items to add to the menu
 	 */
-	public Menu(State parent, MenuItem... items) {
+	public Menu(MenuItem... items) {
 		setWidth(300);
-		this.parent = parent;
 		if (items.length > 0) {
 			for (int i = 0; i < items.length; i++) {
 				items[i].position = i;
@@ -64,14 +61,6 @@ public class Menu implements Renderable {
 
 	public void setWidth(int width) {
 		this.width = width;
-	}
-
-	/**
-	 * Returns the parent of the menu
-	 * @return The parent
-	 */
-	public State getParent() {
-		return parent;
 	}
 	
 	public MenuItem getSelected() {

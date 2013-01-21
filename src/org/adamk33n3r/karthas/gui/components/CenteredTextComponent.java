@@ -5,17 +5,18 @@ import org.adamk33n3r.karthas.Resources;
 import org.adamk33n3r.karthas.gui.GUI;
 import org.newdawn.slick.Image;
 
-public class TextComponent extends Component{
+public class CenteredTextComponent extends Component {
 	
 	String text;
-	int x, y;
-	boolean centered;
+	int y, distance;
+	boolean yFromBottom;
 	
-	public TextComponent(String text, int x, int y, boolean centered) {
+	public CenteredTextComponent(String text, int y, boolean yFromBottom) {
 		this.text = text;
-		this.x = x;
 		this.y = y;
-		this.centered = centered;
+		this.yFromBottom = yFromBottom;
+		if (yFromBottom)
+			this.distance = y;
 	}
 
 	@Override
@@ -26,13 +27,13 @@ public class TextComponent extends Component{
 	@Override
 	public void render() {
 		int size = GUI.font.getWidth(text);
+		if (yFromBottom)
+			y = GUI.height - distance;
+		int x1 = GUI.width / 2 - size / 2;
 		if (Resources.get(text) == null)
 			Resources.set(text, ((ResizableImage) Resources.get("ComponentBack")).build(size + 25, GUI.font.getLineHeight()));
-		GUI.drawImage((Image) Resources.get(text), x - size / 2 - 15, y - 6);
-		if (centered)
-			GUI.drawStringCentered(x, y, text, GUI.DEFAULT_FONT_COLOR, GUI.font);
-		else
-			GUI.drawString(x, y, text, GUI.DEFAULT_FONT_COLOR, GUI.font);
+		GUI.drawImage((Image) Resources.get(text), x1 - 15, y - 6);
+		GUI.drawString(x1, y, text, GUI.DEFAULT_FONT_COLOR, GUI.font);
 	}
-	
+
 }

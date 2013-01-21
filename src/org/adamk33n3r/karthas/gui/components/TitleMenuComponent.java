@@ -10,7 +10,7 @@ import org.adamk33n3r.karthas.gui.MenuItemAction;
 public class TitleMenuComponent extends MenuComponent {
 	
 	public TitleMenuComponent() {
-		menu = new Menu(null, new MenuItem("New Game", new MenuItemAction() {
+		menu = new Menu(new MenuItem("New Game", new MenuItemAction() {
 
 			@Override
 			public void execute() {

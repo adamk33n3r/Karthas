@@ -15,8 +15,8 @@ public interface MenuItemAction extends Executable {
 
 		@Override
 		public void execute() {
-			System.out.println("Going back to MainMenu");
-			GUI.changeTo("Main");
+			System.out.println("Going back a menu layer");
+			GUI.goBack();
 		}
 		
 	};

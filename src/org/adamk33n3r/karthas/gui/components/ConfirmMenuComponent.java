@@ -9,7 +9,7 @@ public class ConfirmMenuComponent extends HorizontalMenuComponent {
 	int status = 0;
 	
 	public ConfirmMenuComponent() {
-		menu = new Menu(null, new HorizontalMenuItem("No", new MenuItemAction() {
+		menu = new Menu(new HorizontalMenuItem("No", new MenuItemAction() {
 
 			@Override
 			public void execute() {

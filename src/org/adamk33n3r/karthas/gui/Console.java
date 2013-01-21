@@ -1,14 +1,16 @@
 package org.adamk33n3r.karthas.gui;
 
-// LWJGL imports
+import java.io.InputStream;
+import java.net.URL;
+
 import org.lwjgl.input.Keyboard;
 
 // Slick imports
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.AngelCodeFont;
 
+import org.adamk33n3r.karthas.Karthas;
 // My imports
 import org.adamk33n3r.karthas.gui.components.ConfirmMenuComponent;
 
@@ -23,11 +25,14 @@ public class Console {
 	static AngelCodeFont font;
 
 	private Console() {
-		 try {
-			font = new AngelCodeFont("resources/Chalkduster20.fnt", new Image("resources/Chalkduster20.png"));
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+			String file = Karthas.home + "/resources/Chalkduster20.fnt";
+			String file2 = Karthas.home + "/resources/Chalkduster20.png";
+			
+			try {
+				font = new AngelCodeFont(file, file2);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
 	}
 
 	public static void start(String prompt) {
@@ -48,7 +53,7 @@ public class Console {
 		return "";
 	}
 	
-	public static boolean confirm() {
+	public static boolean confirm() { //TODO idk why this is in console
 		Console.start("");
 		ConfirmMenuComponent comp = new ConfirmMenuComponent();
 		while(comp.getStatus() == 0) {

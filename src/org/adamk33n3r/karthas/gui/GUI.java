@@ -1,17 +1,16 @@
 package org.adamk33n3r.karthas.gui;
 
-// Java import
+// Java imports
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.LinkedList;
 
-import org.adamk33n3r.karthas.ResizableImage;
 // LWGL imports
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -22,43 +21,85 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
+// My imports
+import org.adamk33n3r.karthas.Karthas;
+import org.adamk33n3r.karthas.Resources;
+
 public class GUI {
-	
+
 	public static final Color DEFAULT_MENU_COLOR = Color.blue;
 	public static final Color DEFAULT_DISABLED_COLOR = Color.gray;
 	public static final Color DEFAULT_BORDER_COLOR = Color.gray;
 	public static final Color DEFAULT_FONT_COLOR = Color.yellow;
-	public static final Color DEFAULT_SELECTED_MENU_COLOR = new Color(255,225,0);
+	public static final Color DEFAULT_SELECTED_MENU_COLOR = new Color(255, 225, 0);
 	public static final Color DEFAULT_SELECTED_FONT_COLOR = Color.orange;
 
 	static GUI gui = null;
 
 	static boolean running = true;
-	
+	static boolean console = false;
+	public static boolean applet = false;
+
 	private static long lastFrame;
 	private static int fps, curFPS;
 	private static double delta;
 	private static long lastTime;
 
 	static HashMap<String, State> stateMap;
-	static State curState = null;
-	static boolean console = false;
+	//static State curState = null;
+	static LinkedList<State> stateLayers;
 
 	public static int width, height;
+	public static boolean fullscreen;
 
 	public static AngelCodeFont font = null;
+
+	boolean downloading;
 
 	private GUI(String title, int width, int height) {
 		GUI.width = width;
 		GUI.height = height;
+		GUI.initTime();
 
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setTitle(title);
+			if (!applet)
+				Display.setResizable(true);
 			Display.create();
+			initGL();
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
+
+		Resources.downloadInit();
+		stateMap = StateBuilder.downloading();
+		try {
+			String file = Karthas.home + "/resources/Chalkduster24.fnt";
+			String file2 = Karthas.home + "/resources/Chalkduster24.png";
+			font = new AngelCodeFont(file, file2);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+
+		if (Resources.needDownload()) {
+			GUI.changeTo("Downloading");
+			downloading = true;
+			new Thread() {
+				@Override
+				public void run() {
+					Resources.downloadResources();
+					downloading = false;
+				}
+			}.start();
+
+			while (downloading) {
+				GUI.update();
+				GUI.render(false);
+			}
+			GUI.goBack();
+		}
+		Resources.load();
 	}
 
 	/**
@@ -69,7 +110,17 @@ public class GUI {
 	 */
 	public static void create(String title, int width, int height) {
 		Keyboard.enableRepeatEvents(true);
+		stateLayers = new LinkedList<State>();
+		setDelta();
 		gui = new GUI(title, width, height);
+
+		stateMap = StateBuilder.build();
+		GUI.changeTo("Title");
+		//GUI.changeTo("Downloading");
+
+	}
+
+	private static void initGL() {
 		glShadeModel(GL_SMOOTH);
 		glDisable(GL_LIGHTING);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -82,21 +133,8 @@ public class GUI {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0, 800, 600, 0, 1, -1);
+		glOrtho(0, width, height, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
-
-		stateMap = StateBuilder.create();
-		curState = stateMap.get("Title");
-		
-		try {
-			//font = new AngelCodeFont("resources/Impact24.fnt", new Image("resources/Impact24.png"));
-			//font = new AngelCodeFont("resources/ComicSans32.fnt", new Image("resources/ComicSans32.png"));
-			//font = new AngelCodeFont("resources/ComicSans24Bold.fnt", new Image("resources/ComicSans24Bold.png"));
-			font = new AngelCodeFont("resources/Chalkduster24.fnt", new Image("resources/Chalkduster24.png"));
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -120,17 +158,17 @@ public class GUI {
 	public static void destroy() {
 		Display.destroy();
 	}
-	
+
 	public static State getCurrentState() {
-		return curState;
+		return stateLayers.get(stateLayers.size() - 1);
 	}
 
 	/**
 	 * Changes the current menu
 	 * @param menu - The {@link Menu} to change to
 	 */
-	public static void changeTo(State state) {
-		curState = state;
+	private static void changeTo(State state) {
+		stateLayers.add(state);
 	}
 
 	/**
@@ -141,6 +179,12 @@ public class GUI {
 		State newState = stateMap.get(stateName);
 		if (newState != null)
 			changeTo(newState);
+		else
+			System.err.println("Can't find state!");
+	}
+
+	public static void goBack() {
+		stateLayers.pop();
 	}
 
 	/**
@@ -161,12 +205,9 @@ public class GUI {
 			DisplayMode targetDisplayMode = null;
 
 			if (fullscreen) {
-				DisplayMode[] modes = Display.getAvailableDisplayModes();
 				int freq = 0;
 
-				for (int i = 0; i < modes.length; i++) {
-					DisplayMode current = modes[i];
-
+				for (DisplayMode current : Display.getAvailableDisplayModes()) {
 					if ((current.getWidth() == width) && (current.getHeight() == height)) {
 						if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
 							if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
@@ -195,15 +236,23 @@ public class GUI {
 			}
 
 			Display.setDisplayMode(targetDisplayMode);
+			width = Display.getWidth();
+			height = Display.getHeight();
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glViewport(0, 0, width, height);
+			glScissor(0, 0, width, height);
+			glOrtho(0, width, height, 0, 1, -1);
+			glMatrixMode(GL_MODELVIEW);
 			Display.setFullscreen(fullscreen);
 
 		} catch (LWJGLException e) {
 			System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
 		}
 	}
-	
+
 	public static void renderState() {
-		curState.render();
+		stateLayers.get(stateLayers.size() - 1).render();
 	}
 
 	/**
@@ -216,46 +265,55 @@ public class GUI {
 	 */
 	public static void drawString(int x, int y, String string, Color color, Font font) {
 		glEnable(GL_TEXTURE_2D);
-		
+
 		font.drawString(x, y, string, color);
 
 		glDisable(GL_TEXTURE_2D);
 	}
-	
+
 	public static void drawStringCentered(int x, int y, String string, Color color, Font font) {
 		glEnable(GL_TEXTURE_2D);
-		
+
 		font.drawString(x - font.getWidth(string) / 2, y, string, color);
 
 		glDisable(GL_TEXTURE_2D);
 	}
-	
+
 	public static void drawRect(int x1, int y1, int x2, int y2, Color color) {
 		setColor(color);
 		glRecti(x1, y1, x2, y2);
 	}
-	
+
 	public static void drawRect(int x1, int y1, int x2, int y2, Color color, int borderWidth, Color borderColor) {
 		drawRect(x1 - borderWidth, y1 - borderWidth, x2 + borderWidth, y2 + borderWidth, borderColor);
 		drawRect(x1, y1, x2, y2, color);
 	}
-	
+
 	public static void drawPolygon(Color color, Point... points) {
 		setColor(color);
-		glBegin(GL11.GL_POLYGON);
-		for(int i = 0; i < points.length; i++)
+		glBegin(GL_POLYGON);
+		for (int i = 0; i < points.length; i++)
 			glVertex2f(points[i].x, points[i].y);
 		glEnd();
 	}
-	
+
 	public static void drawImage(Image img, int x, int y) {
 		img.draw(x, y);
 		glDisable(GL_TEXTURE_2D);
 	}
-	
-	public static void drawResizableImage(ResizableImage img, int x, int y, int width, int height) {
-		img.getImage(width, height).draw(x, y);
-		glDisable(GL_TEXTURE_2D);
+
+	public static void drawImageFull(Image img) {
+		img.draw(0, 0, width, height);
+	}
+
+	public static void drawImageFullToScale(Image img) {
+		int tw = 0, th = 0;
+		while (tw < width && th < height) {
+			tw++;
+			th++;
+		}
+
+		img.draw((width - tw) / 2, (height - th) / 2, tw, th);
 	}
 
 	/**
@@ -273,31 +331,45 @@ public class GUI {
 		console = true;
 		Console.start(prompt);
 		while (Console.isRunning()) {
-			if(Display.isCloseRequested()) {
+			if (Display.isCloseRequested()) {
 				shutdown();
 				break;
 			}
 			Console.update();
 			Console.render();
-		}console = false;
+		}
+		console = false;
 		return Console.getInput();
 	}
-	
+
 	public static boolean confirm() {
 		return Console.confirm();
 	}
-	
+
 	/**
 	 * Updates. Keyboard events
 	 */
 	public static void update() {
-		if(getTime() - lastTime > 1000) {
-			lastTime+=1000;
+
+		if (!applet && Display.wasResized()) {
+			width = Display.getWidth();
+			height = Display.getHeight();
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glViewport(0, 0, width, height);
+			glScissor(0, 0, width, height);
+			glOrtho(0, width, height, 0, 1, -1);
+			glMatrixMode(GL_MODELVIEW);
+			System.out.println("resized to: " + width + "x" + height);
+		}
+		if (getTime() - lastTime > 1000) {
+			lastTime += 1000;
 			fps = curFPS;
 			curFPS = 0;
-		}curFPS++;
+		}
+		curFPS++;
 		if (!console)
-			curState.update();
+			stateLayers.get(stateLayers.size() - 1).update();
 		Display.setTitle("Karthas - FPS: " + getFPS());
 	}
 
@@ -305,48 +377,49 @@ public class GUI {
 	 * Renders the {@code GUI}
 	 * @param onlyUpdate If true, will only update display
 	 */
-	public static void render(boolean updateOnly) { //TODO Render "layers" of states
+	public static void render(boolean updateOnly) {
 		setDelta();
-		if(!updateOnly)
-			curState.render();
+		//glRecti(50, 50, 100, 100);
+		if (!updateOnly)
+			stateLayers.get(stateLayers.size() - 1).render();
 		Display.update();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		Display.sync(60);
 	}
-	
+
 	/**
 	 * Get the accurate system time
 	 * 
 	 * @return The system time in milliseconds
 	 */
 	public static long getTime() {
-	    return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
 	}
-	
+
 	/**
 	 * Returns the delta
 	 * @return delta
 	 */
-	
+
 	public static double getDelta() {
 		return delta;
 	}
-	
-	/** 
-	 * Calculate how many milliseconds have passed 
+
+	/**
+	 * Calculate how many milliseconds have passed
 	 * since last frame.
 	 */
 	private static void setDelta() {
-	    long time = getTime();
-	    double delta = time - lastFrame;
-	    lastFrame = time;
-	    GUI.delta = delta;
+		long time = getTime();
+		double delta = time - lastFrame;
+		lastFrame = time;
+		GUI.delta = delta;
 	}
-	
+
 	public static int getFPS() {
 		return fps;
 	}
-	
+
 	public static void initTime() {
 		lastTime = getTime();
 		lastFrame = getTime();

@@ -1,5 +1,7 @@
 package org.adamk33n3r.karthas;
 
+// Java imports
+
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -14,22 +16,25 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
 
-// XStream for XML serialization
-import com.thoughtworks.xstream.XStream;
-
-import org.lwjgl.LWJGLException;
 // LWJGL
 import org.lwjgl.opengl.Display;
+import org.lwjgl.LWJGLException;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 // My own classes
 import org.adamk33n3r.karthas.entities.Actor;
 import org.adamk33n3r.karthas.entities.Entity;
+import org.adamk33n3r.karthas.gui.Cutscene;
+import org.adamk33n3r.karthas.gui.CutsceneBuilder;
 import org.adamk33n3r.karthas.gui.GUI;
 
-public class Karthas extends Applet{
+public class Karthas extends Applet {
 
-	private static final long serialVersionUID = 2577990505555084916L;
+	private static final long serialVersionUID = 1108146708237546867L;
 
 	static final boolean XML = false;
 
@@ -37,10 +42,14 @@ public class Karthas extends Applet{
 	static String playerName = "";
 	static Actor player;
 
+	static String codeBase;
+	public static String home, sep;
+;
+
 	static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	Canvas display_parent;
 	Thread gameThread;
-	
+
 	public void startGame() {
 		gameThread = new Thread() {
 			public void run() {
@@ -48,14 +57,22 @@ public class Karthas extends Applet{
 					Display.setParent(display_parent);
 				} catch (LWJGLException e) {
 					e.printStackTrace();
-				}
+				}GUI.applet = true;
 				GUI.create("Karthas", 800, 600);
+				/*LinkedList<Cutscene> s = CutsceneBuilder.build();
+				while (s.get(0).isRunning()) {
+					s.get(0).update();
+					s.get(0).render();
+					Display.update();
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+					Display.sync(60);
+				}*/
 				loop();
 			}
 		};
 		gameThread.start();
 	}
-	
+
 	public void stopGame() {
 		try {
 			gameThread.join();
@@ -63,50 +80,83 @@ public class Karthas extends Applet{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void start() {
-		
+		setUp();
+		add(display_parent);
+		display_parent.setFocusable(true);
+		display_parent.requestFocus();
+		display_parent.setIgnoreRepaint(true);
+		setVisible(true);
 	}
-	
+
+	public void startAsApp() {
+		setUp();
+		GUI.create("Karthas", 800, 600);
+
+		/*LinkedList<Cutscene> s = CutsceneBuilder.build();
+		while (s.get(0).isRunning()) {
+			s.get(0).update();
+			s.get(0).render();
+			Display.update();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Display.sync(60);
+		}*/
+
+		loop();
+	}
+
 	public void stop() {
-		
+
 	}
-	
+
 	public void destroy() {
 		remove(display_parent);
 		super.destroy();
 	}
-	
+
+	private void setUp() {
+		sep = System.getProperty("file.separator");
+		home = System.getProperty("user.home") + sep + ".karthas";
+	}
+
+	public static String getCWD() {
+		return codeBase != null ? codeBase : "file:///" + System.getProperty("user.dir") + "/";
+	}
+
 	public void init() {
+		codeBase = getCodeBase().toString();
+		setUp();
 		setLayout(new BorderLayout());
+		//setSize(1280, 800);
 		try {
 			display_parent = new Canvas() {
+				private static final long serialVersionUID = -8338114538157335277L;
+
 				public final void addNotify() {
 					super.addNotify();
 					startGame();
 				}
+
 				public final void removeNotify() {
 					stopGame();
 					super.removeNotify();
 				}
 			};
-			display_parent.setSize(GUI.width, GUI.height);
-			add(display_parent);
-			display_parent.setFocusable(true);
-			display_parent.requestFocus();
-			display_parent.setIgnoreRepaint(true);
-			setVisible(true);
-		} catch(Exception e) {
+			display_parent.setSize(800, 600);
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to create display");
 		}
 	}
-	
+
 	/**
 	 * @param args
 	 */
 	public void loop() {
-		System.out.println("Starting up....\n");
+		System.out.println("Starting up...");
+		
 		/*try {
 			init();
 		} catch (IOException e) {
@@ -115,16 +165,13 @@ public class Karthas extends Applet{
 
 		//printSystemMessage(player);
 
-		Resources.load();
-		GUI.initTime();
-		
 		while (GUI.isRunning()) {
 			GUI.update();
 			GUI.render(false);
-			
-			if(Display.isCloseRequested())
+
+			if (Display.isCloseRequested())
 				GUI.shutdown();
-			
+
 			/*printMainMenu();
 			switch (Integer.parseInt(getInput())) {
 				case 1:
@@ -141,9 +188,8 @@ public class Karthas extends Applet{
 			}*/
 		}
 		GUI.destroy();
-		
+
 		//save(player, XML);
-		System.exit(0);
 
 	}
 
@@ -165,18 +211,20 @@ public class Karthas extends Applet{
 	 * @param playerName - The player name to be loaded
 	 * @return True if loaded successfully
 	 */
-
+//TODO rewrite load and save functions
 	public static boolean load(String playerName, boolean Xstream) {
-		if (Xstream) {
+		/*if (Xstream) {
 			XStream xstream = new XStream();
 			xstream.alias("player", Actor.class);
-			try {			printSystemMessage("before");
+			try {
+				printSystemMessage("before");
 
 				//player = (Actor) xstream.fromXML(new File(playerName));
 				player = (Actor) xstream.fromXML(new File(playerName + ".xml"));
-			}catch (Exception e) {
+			} catch (Exception e) {
 				System.err.println(String.format("Save %s.xml does not exist", playerName));
-			}			printSystemMessage("after");
+			}
+			printSystemMessage("after");
 
 			run = true;
 		} else {
@@ -189,7 +237,8 @@ public class Karthas extends Applet{
 				System.err.println(e.getLocalizedMessage());
 			}
 		}
-		return run;
+		return run;*/
+		return true;
 	}
 
 	/**
@@ -200,7 +249,7 @@ public class Karthas extends Applet{
 	 */
 
 	public static boolean save(Entity object, boolean Xstream) {
-		try {
+		/*try {
 			if (Xstream) {
 				XStream xstream = new XStream();
 				xstream.alias("player", Actor.class);
@@ -218,21 +267,20 @@ public class Karthas extends Applet{
 		} catch (IOException e) {
 			System.err.println(e.getLocalizedMessage());
 			e.printStackTrace();
-		}
+		}*/
 		return true;
 	}
-	
+
 	/**
 	 * Helper function to print the Main Menu
 	 */
-	
+
 	@SuppressWarnings("unused")
-	private static void printMainMenu(){
+	private static void printMainMenu() {
 		printSystemMessage("1. ~Attack\n2. Print Stats\n3. Save\n4. Quit");
 		printPrompt();
 	}
-	
-	
+
 	/**
 	 * Helper function to print a message to the console
 	 * @param msg - Message to print
@@ -241,7 +289,7 @@ public class Karthas extends Applet{
 	private static void printSystemMessage(Object msg) {
 		System.out.println(msg);
 	}
-	
+
 	/**
 	 * Helper function to print a prompt
 	 */
@@ -254,7 +302,7 @@ public class Karthas extends Applet{
 	 * Helper function to print an error message
 	 * @param error - Error to be printed
 	 */
-	
+
 	public static void printSystemError(String error) {
 		System.err.println("Error: " + error);
 	}
@@ -270,5 +318,5 @@ public class Karthas extends Applet{
 			e.printStackTrace();
 		}
 	}
-	
+
 }

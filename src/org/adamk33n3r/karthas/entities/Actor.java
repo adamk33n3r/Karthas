@@ -18,6 +18,7 @@ public class Actor extends Entity {
 	private static final long serialVersionUID = -3138869789221274698L;
 	private static final int NUM_OF_FIELDS = 4;
 	private int version = 4;
+	private int penis = 12;
 	private String prefix;
 	private HashMap<String, Integer> attributes;
 	private Actor spouse;
@@ -59,6 +60,7 @@ public class Actor extends Entity {
 	public Actor(int posx, int posy, String name, String prefix, int att, int str, int def, int arm, Actor spouse) {
 		this(posx,posy,name,prefix,att,str,def,arm);
 		this.spouse = spouse;
+		this.spouse.spouse = this;
 	}
 
 	/**
@@ -146,8 +148,8 @@ public class Actor extends Entity {
 	 */
 
 	public void setSpouse(Actor spouse) {
-		this.spouse = spouse;
 		spouse.spouse = this;
+		this.spouse = spouse;
 	}
 	
 	/**

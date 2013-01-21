@@ -3,19 +3,14 @@ package org.adamk33n3r.karthas;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
-import org.newdawn.slick.SlickException;
 
 public class ResizableImage {
 	private Image image;
 	private Piece topLeft, topRight, bottomLeft, bottomRight, vertMiddleTop, vertMiddleBottom, horMiddleLeft, horMiddleRight, center;
 	private Piece[] pieces;
 
-	public ResizableImage(String path, int x1, int x2, int x3, int y1, int y2, int y3) {
-		try {
-			image = new org.newdawn.slick.Image(path);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+	public ResizableImage(Image image, int x1, int x2, int x3, int y1, int y2, int y3) {
+		this.image = image;
 		topLeft = new Piece(image.getSubImage(0, 0, x1, y1), 0, 0);
 		topRight = new Piece(image.getSubImage(x1 + x2, 0, x3, y1), x1 + x2, 0);
 		bottomLeft = new Piece(image.getSubImage(0, y1 + y2, x1, y3), 0, y1 + y2);
@@ -37,7 +32,7 @@ public class ResizableImage {
 		pieces[8] = center;
 	}
 
-	public Image getImage(int width, int height) {
+	public Image getImage() {
 		return image;
 	}
 
@@ -104,12 +99,10 @@ public class ResizableImage {
 	}
 
 	private class Piece {
-		public Image image;
 
 		public int x, y, width, height, drawX, drawY;
 
 		public Piece(Image image, int x, int y) {
-			this.image = image;
 			this.x = x;
 			this.y = y;
 			this.width = image.getWidth();

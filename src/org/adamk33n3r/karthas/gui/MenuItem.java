@@ -2,7 +2,6 @@ package org.adamk33n3r.karthas.gui;
 
 import org.adamk33n3r.karthas.Executable;
 import org.adamk33n3r.karthas.Renderable;
-import org.adamk33n3r.karthas.ResizableImage;
 import org.adamk33n3r.karthas.Resources;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
@@ -50,8 +49,7 @@ public class MenuItem implements Renderable, Executable {
 			this.function = new MenuItemAction() {
 				@Override
 				public void execute() {
-					if(parentMenu != null)
-						GUI.changeTo(parentMenu.getParent());
+					GUI.goBack();
 				}
 			};
 		}
