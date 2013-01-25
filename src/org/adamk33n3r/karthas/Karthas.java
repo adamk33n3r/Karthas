@@ -1,38 +1,25 @@
 package org.adamk33n3r.karthas;
 
 // Java imports
-
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
 
 // LWJGL
 import org.lwjgl.opengl.Display;
 import org.lwjgl.LWJGLException;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
 
 // My own classes
 import org.adamk33n3r.karthas.entities.Actor;
 import org.adamk33n3r.karthas.entities.Entity;
-import org.adamk33n3r.karthas.gui.Cutscene;
-import org.adamk33n3r.karthas.gui.CutsceneBuilder;
 import org.adamk33n3r.karthas.gui.GUI;
 
 public class Karthas extends Applet {
+	
+	public static final boolean DEBUG = true;
 
 	private static final long serialVersionUID = 1108146708237546867L;
 
@@ -317,6 +304,11 @@ public class Karthas extends Applet {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void printDebug(String string) {
+		if (Karthas.DEBUG)
+			System.out.println(string);
 	}
 
 }

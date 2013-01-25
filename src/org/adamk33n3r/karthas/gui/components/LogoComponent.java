@@ -21,11 +21,14 @@ public class LogoComponent extends Component {
 	public void update() {
 		double delta = GUI.getDelta();
 		double change = direction * delta / 1000;
+		//System.out.println(String.format("Delta:\t%s\tChange:\t%s\tAlpha:\t%s", delta, change, alpha));
+
 		alpha+=change;
 		if (alpha < 100)
 			direction = speed;
 		else if (alpha > 255)
 			direction = -speed;
+
 	}
 
 	@Override

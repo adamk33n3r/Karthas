@@ -24,6 +24,8 @@ import org.newdawn.slick.SlickException;
 // My imports
 import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.Resources;
+import org.adamk33n3r.utils.Timer;
+import org.adamk33n3r.utils.TimerAction;
 
 public class GUI {
 
@@ -33,7 +35,7 @@ public class GUI {
 	public static final Color DEFAULT_FONT_COLOR = Color.yellow;
 	public static final Color DEFAULT_SELECTED_MENU_COLOR = new Color(255, 225, 0);
 	public static final Color DEFAULT_SELECTED_FONT_COLOR = Color.orange;
-
+	
 	static GUI gui = null;
 
 	static boolean running = true;
@@ -46,7 +48,6 @@ public class GUI {
 	private static long lastTime;
 
 	static HashMap<String, State> stateMap;
-	//static State curState = null;
 	static LinkedList<State> stateLayers;
 
 	public static int width, height;
@@ -59,7 +60,6 @@ public class GUI {
 	private GUI(String title, int width, int height) {
 		GUI.width = width;
 		GUI.height = height;
-		GUI.initTime();
 
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
@@ -83,6 +83,7 @@ public class GUI {
 		}
 
 		if (Resources.needDownload()) {
+			Karthas.printDebug("");
 			GUI.changeTo("Downloading");
 			downloading = true;
 			new Thread() {
@@ -111,11 +112,13 @@ public class GUI {
 	public static void create(String title, int width, int height) {
 		Keyboard.enableRepeatEvents(true);
 		stateLayers = new LinkedList<State>();
-		setDelta();
+
 		gui = new GUI(title, width, height);
 
 		stateMap = StateBuilder.build();
 		GUI.changeTo("Title");
+		initTime();
+		setDelta();
 		//GUI.changeTo("Downloading");
 
 	}
@@ -194,7 +197,7 @@ public class GUI {
 	 * @param height The height of the display required
 	 * @param fullscreen True if we want fullscreen mode
 	 */
-	public static void setDisplayMode(int width, int height, boolean fullscreen) {
+	public static void setDisplayMode(int width, int height, final boolean fullscreen) {
 
 		// return if requested DisplayMode is already set
 		if ((Display.getDisplayMode().getWidth() == width) && (Display.getDisplayMode().getHeight() == height) && (Display.isFullscreen() == fullscreen)) {
@@ -236,19 +239,31 @@ public class GUI {
 			}
 
 			Display.setDisplayMode(targetDisplayMode);
-			width = Display.getWidth();
-			height = Display.getHeight();
+
+			GUI.width = width;
+			GUI.height = height;
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glViewport(0, 0, width, height);
-			glScissor(0, 0, width, height);
 			glOrtho(0, width, height, 0, 1, -1);
 			glMatrixMode(GL_MODELVIEW);
-			Display.setFullscreen(fullscreen);
+
+			//System.out.println("It is now: " + GUI.width + "x" + GUI.height + " when it should be: " + width + "x" + height);
+
+			Timer.run(new TimerAction() {
+				@Override
+				public void run() {
+					GUI.setFullscreen(fullscreen);
+				}
+			}, 100);
 
 		} catch (LWJGLException e) {
 			System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
 		}
+	}
+
+	private static void setFullscreen(boolean fullscreen) {
+		GUI.fullscreen = fullscreen;
 	}
 
 	public static void renderState() {
@@ -357,10 +372,16 @@ public class GUI {
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glViewport(0, 0, width, height);
-			glScissor(0, 0, width, height);
 			glOrtho(0, width, height, 0, 1, -1);
 			glMatrixMode(GL_MODELVIEW);
 			System.out.println("resized to: " + width + "x" + height);
+		}
+		if (fullscreen && !Display.isFullscreen() || !fullscreen && Display.isFullscreen()) {
+			try {
+				Display.setFullscreen(fullscreen);
+			} catch (LWJGLException e) {
+				e.printStackTrace();
+			}
 		}
 		if (getTime() - lastTime > 1000) {
 			lastTime += 1000;
@@ -380,11 +401,19 @@ public class GUI {
 	public static void render(boolean updateOnly) {
 		setDelta();
 		//glRecti(50, 50, 100, 100);
+		renderDebug();
 		if (!updateOnly)
 			stateLayers.get(stateLayers.size() - 1).render();
 		Display.update();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		Display.sync(60);
+	}
+
+	private static void renderDebug() {
+		if (!Karthas.DEBUG)
+			return;
+		drawRect(0, 0, 1, 1, DEFAULT_FONT_COLOR);
+		drawString(0, 0, String.format("Resolution: %sx%s\nFPS: %s", Display.getWidth(), Display.getHeight(), GUI.getFPS()), DEFAULT_FONT_COLOR, font);
 	}
 
 	/**

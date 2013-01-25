@@ -1,9 +1,9 @@
 package org.adamk33n3r.karthas.gui.components;
 
-// LWJGL imports
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
+import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.gui.GUI;
 // My imports
 import org.adamk33n3r.karthas.gui.Menu;
@@ -35,16 +35,19 @@ public abstract class MenuComponent extends Component {
 					if(!Keyboard.isRepeatEvent())
 						menu.getSelected().execute();
 				}else if (key == Keyboard.KEY_F) {
-					GUI.fullscreen = !GUI.fullscreen;
-					if(GUI.fullscreen) {
+					boolean fullscreen = !GUI.fullscreen;
+					if(fullscreen) {
 						GUI.width = Display.getDesktopDisplayMode().getWidth();
 						GUI.height = Display.getDesktopDisplayMode().getHeight();
+
 					}else {
 						GUI.width = 800;
 						GUI.height = 600;
-					}
-					GUI.setDisplayMode(GUI.width, GUI.height, GUI.fullscreen);
-					System.out.println("Switching fullscreen to: " + GUI.fullscreen + " With: " + Display.getDisplayMode());
+					}GUI.setDisplayMode(GUI.width, GUI.height, fullscreen);
+					if (Karthas.DEBUG)
+						System.out.println("Switched fullscreen to: " + fullscreen + " With: " + Display.getDisplayMode());
+					//System.out.println("GUI.fullscreen = " + GUI.fullscreen);
+					
 				}
 			}
 		}
