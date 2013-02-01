@@ -250,12 +250,14 @@ public class GUI {
 
 			//System.out.println("It is now: " + GUI.width + "x" + GUI.height + " when it should be: " + width + "x" + height);
 
-			Timer.run(new TimerAction() {
+			/*Timer.run(new TimerAction() {
 				@Override
 				public void run() {
 					GUI.setFullscreen(fullscreen);
 				}
-			}, 100);
+			}, 100);*/
+			Display.update();
+			setFullscreen(fullscreen);
 
 		} catch (LWJGLException e) {
 			System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
