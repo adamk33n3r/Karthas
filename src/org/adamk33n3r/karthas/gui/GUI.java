@@ -51,7 +51,7 @@ public class GUI {
 	static LinkedList<State> stateLayers;
 
 	public static int width, height;
-	public static boolean fullscreen;
+	public static boolean fullscreen,fullscreenChanged;
 
 	public static AngelCodeFont font = null;
 
@@ -127,6 +127,7 @@ public class GUI {
 		glShadeModel(GL_SMOOTH);
 		glDisable(GL_LIGHTING);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		//glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 		glClearDepth(1);
 
 		glEnable(GL_BLEND);
@@ -248,14 +249,6 @@ public class GUI {
 			glOrtho(0, width, height, 0, 1, -1);
 			glMatrixMode(GL_MODELVIEW);
 
-			//System.out.println("It is now: " + GUI.width + "x" + GUI.height + " when it should be: " + width + "x" + height);
-
-			/*Timer.run(new TimerAction() {
-				@Override
-				public void run() {
-					GUI.setFullscreen(fullscreen);
-				}
-			}, 100);*/
 			Display.update();
 			setFullscreen(fullscreen);
 
@@ -265,7 +258,12 @@ public class GUI {
 	}
 
 	private static void setFullscreen(boolean fullscreen) {
+		if (GUI.fullscreen != fullscreen)
+			GUI.fullscreenChanged = true;
+		else
+			GUI.fullscreenChanged = false;
 		GUI.fullscreen = fullscreen;
+		Karthas.printDebug("GUI is " + GUI.fullscreen + " and display is " + Display.isFullscreen());
 	}
 
 	public static void renderState() {
@@ -378,9 +376,10 @@ public class GUI {
 			glMatrixMode(GL_MODELVIEW);
 			System.out.println("resized to: " + width + "x" + height);
 		}
-		if (fullscreen && !Display.isFullscreen() || !fullscreen && Display.isFullscreen()) {
+		if (fullscreen && !Display.isFullscreen() || !fullscreen && fullscreenChanged) {
 			try {
 				Display.setFullscreen(fullscreen);
+				fullscreenChanged = false;
 			} catch (LWJGLException e) {
 				e.printStackTrace();
 			}

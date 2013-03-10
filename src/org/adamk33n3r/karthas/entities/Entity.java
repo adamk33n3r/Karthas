@@ -62,5 +62,6 @@ public abstract class Entity implements java.io.Serializable {
 		this.name = name;
 	}
 	
+	@Override
 	public abstract String toString();
 }

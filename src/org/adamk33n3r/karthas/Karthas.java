@@ -4,9 +4,14 @@ package org.adamk33n3r.karthas;
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import javax.swing.JFrame;
 
 // LWJGL
 import org.lwjgl.opengl.Display;
@@ -24,6 +29,7 @@ public class Karthas extends Applet {
 	private static final long serialVersionUID = 1108146708237546867L;
 
 	static final boolean XML = false;
+	boolean closeRequested = false;
 
 	static boolean run = false;
 	static String playerName = "";
@@ -31,7 +37,8 @@ public class Karthas extends Applet {
 
 	static String codeBase;
 	public static String home, sep;
-;
+	
+	JFrame frame;
 
 	static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	Canvas display_parent;
@@ -39,6 +46,7 @@ public class Karthas extends Applet {
 
 	public void startGame() {
 		gameThread = new Thread() {
+			@Override
 			public void run() {
 				try {
 					Display.setParent(display_parent);
@@ -65,9 +73,10 @@ public class Karthas extends Applet {
 			gameThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}frame.dispose();
 	}
 
+	@Override
 	public void start() {
 		setUp();
 		add(display_parent);
@@ -78,6 +87,44 @@ public class Karthas extends Applet {
 	}
 
 	public void startAsApp() {
+		/*frame = new JFrame("Karthas");
+		setUp();
+		frame.setLayout(new BorderLayout());
+		//frame.setSize(1600, 1200);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				closeRequested = true;
+			}
+		});
+		try {
+			display_parent = new Canvas() {
+				private static final long serialVersionUID = -8338114538157335277L;
+
+				public final void addNotify() {
+					super.addNotify();
+					startGame();
+				}
+
+				public final void removeNotify() {
+					stopGame();
+					super.removeNotify();
+				}
+			};
+			display_parent.setSize(400, 300);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Unable to create display");
+		}frame.add(display_parent, BorderLayout.CENTER);
+		frame.setPreferredSize(new Dimension(800, 600));
+		frame.pack();
+		display_parent.setFocusable(true);
+		//display_parent.requestFocus();
+		display_parent.setIgnoreRepaint(true);
+		frame.setVisible(true);*/
+		
+		
 		setUp();
 		GUI.create("Karthas", 800, 600);
 
@@ -93,10 +140,12 @@ public class Karthas extends Applet {
 		loop();
 	}
 
+	@Override
 	public void stop() {
 
 	}
 
+	@Override
 	public void destroy() {
 		remove(display_parent);
 		super.destroy();
@@ -111,6 +160,7 @@ public class Karthas extends Applet {
 		return codeBase != null ? codeBase : "file:///" + System.getProperty("user.dir") + "/";
 	}
 
+	@Override
 	public void init() {
 		codeBase = getCodeBase().toString();
 		setUp();
@@ -120,11 +170,13 @@ public class Karthas extends Applet {
 			display_parent = new Canvas() {
 				private static final long serialVersionUID = -8338114538157335277L;
 
+				@Override
 				public final void addNotify() {
 					super.addNotify();
 					startGame();
 				}
 
+				@Override
 				public final void removeNotify() {
 					stopGame();
 					super.removeNotify();
@@ -156,26 +208,12 @@ public class Karthas extends Applet {
 			GUI.update();
 			GUI.render(false);
 
-			if (Display.isCloseRequested())
+			if (Display.isCloseRequested() || closeRequested)
 				GUI.shutdown();
 
-			/*printMainMenu();
-			switch (Integer.parseInt(getInput())) {
-				case 1:
-					break;
-				case 2:
-					printSystemMessage(player);
-					break;
-				case 3:
-					save(player,XML);
-					break;
-				case 4:
-					run = false;
-					break;
-			}*/
 		}
 		GUI.destroy();
-
+		System.exit(0);
 		//save(player, XML);
 
 	}

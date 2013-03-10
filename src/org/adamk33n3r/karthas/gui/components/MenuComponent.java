@@ -40,15 +40,11 @@ public abstract class MenuComponent extends Component {
 						GUI.width = Display.getDesktopDisplayMode().getWidth();
 						GUI.height = Display.getDesktopDisplayMode().getHeight();
 
-					}else {
+					} else {
 						GUI.width = 800;
 						GUI.height = 600;
 					}GUI.setDisplayMode(GUI.width, GUI.height, fullscreen);
-					if (Karthas.DEBUG)
-						System.out.println("Switched fullscreen to: " + fullscreen + " With: " + Display.getDisplayMode());
-					//System.out.println("GUI.fullscreen = " + GUI.fullscreen);
-					
-				}
+					Karthas.printDebug("Switched fullscreen to: " + fullscreen + " With: " + Display.getDisplayMode());				}
 			}
 		}
 	}
