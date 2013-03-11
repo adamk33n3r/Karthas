@@ -13,18 +13,42 @@ import org.apache.commons.io.FileUtils;
 // Slick imports
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 
 public class Resources {
 
 	private static HashMap<String, Object> resourceMap = new HashMap<String, Object>();
+	
+	private static HashMap<SOUNDS, Sound> soundMap = new HashMap<SOUNDS, Sound>();
+	
+	public static enum SOUNDS{
+		menuSelect,
+		menuExecute, menuBG
+	}
+	
+	public static Sound getSound(SOUNDS sound) {
+		return soundMap.get(sound);
+	}
 
 	private static String home, sep;
 
 	public static void load() {
+		loadSounds();
 		try {
 			resourceMap.put("resources/Karthas.png", new Image(Karthas.home + String.format("%sresources%sKarthas.png", Karthas.sep, Karthas.sep)));
 			resourceMap.put("MenuItemBack", ((ResizableImage) resourceMap.get("ComponentBack")).build(300, 30));
 		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void loadSounds() {
+		try {
+			soundMap.put(SOUNDS.menuExecute, new Sound(Karthas.home + String.format("%sresources%saudio%sMenuExecute.wav", Karthas.sep, Karthas.sep, Karthas.sep)));
+			soundMap.put(SOUNDS.menuSelect, new Sound(Karthas.home + String.format("%sresources%saudio%sMenuSelect.wav", Karthas.sep, Karthas.sep, Karthas.sep)));
+			soundMap.put(SOUNDS.menuBG, new Sound(Karthas.home + String.format("%sresources%saudio%sbg.wav", Karthas.sep, Karthas.sep, Karthas.sep)));
+		} catch (SlickException e) {
+			Karthas.printSystemError("Could not load Sound");
 			e.printStackTrace();
 		}
 	}

@@ -3,6 +3,7 @@ package org.adamk33n3r.karthas.gui;
 import org.adamk33n3r.karthas.Executable;
 import org.adamk33n3r.karthas.Renderable;
 import org.adamk33n3r.karthas.Resources;
+import org.adamk33n3r.karthas.SoundPlayer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
@@ -118,6 +119,7 @@ public class MenuItem implements Renderable, Executable {
 	 */
 	@Override
 	public void execute() {
+		SoundPlayer.play(Resources.SOUNDS.menuExecute, 1.0f, .75f);
 		function.execute();
 	}
 

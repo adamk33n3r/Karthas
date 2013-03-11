@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 // My import
 import org.adamk33n3r.karthas.Renderable;
+import org.adamk33n3r.karthas.Resources;
+import org.adamk33n3r.karthas.SoundPlayer;
 
 /**
  * A class that defines a menu that contains {@link MenuItem}s
@@ -72,6 +74,7 @@ public class Menu implements Renderable {
 	 */
 	public void nextItem() {
 		items.get(selectedItem).selected = false;
+		SoundPlayer.play(Resources.SOUNDS.menuSelect, .5f, 1.0f);
 		selectedItem = selectedItem == items.size() - 1 ? selectedItem : selectedItem + 1;
 		items.get(selectedItem).selected = true;
 	}
@@ -81,6 +84,7 @@ public class Menu implements Renderable {
 	 */
 	public void prevItem() {
 		items.get(selectedItem).selected = false;
+		SoundPlayer.play(Resources.SOUNDS.menuSelect, .5f, 1.0f);
 		selectedItem = selectedItem < 1 ? selectedItem : selectedItem - 1;
 		items.get(selectedItem).selected = true;
 	}

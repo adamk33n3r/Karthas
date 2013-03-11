@@ -7,9 +7,9 @@ import org.adamk33n3r.karthas.gui.Menu;
 import org.adamk33n3r.karthas.gui.MenuItem;
 import org.adamk33n3r.karthas.gui.MenuItemAction;
 
-public class TitleMenuComponent extends MenuComponent {
+public class TitleMenu extends MenuComponent {
 	
-	public TitleMenuComponent() {
+	public TitleMenu() {
 		menu = new Menu(new MenuItem("New Game", new MenuItemAction() {
 
 			@Override
