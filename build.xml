@@ -1,0 +1,72 @@
+<project name="ProjectName" default="jar" basedir=".">
+	<description>
+		Project Description
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="projectName" value="Karthas" />
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}"
+			classpath="lib/lwjgl.jar:lib/slick.jar:lib/apache_utils_signed.jar:lib/db4o-all-java5.jar"
+			includeantruntime="false" />
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}/lib" />
+
+		<!-- Put everything in ${build} into the {$projectName}-${DSTAMP}.jar file -->
+		<jar jarfile="${dist}/lib/${projectName}-${DSTAMP}.jar" basedir="${build}" />
+	</target>
+
+	<target name="jar" depends="compile" description="Create .jar">
+		<mkdir dir="${dist}" />
+		<mkdir dir="${dist}/libs" />
+		<mkdir dir="${dist}/natives" />
+
+		<jar jarfile="${dist}/${projectName}-${DSTAMP}.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="org.adamk33n3r.karthas.KarthasLauncher" />
+				<attribute name="Class-Path" value="libs/lwjgl.jar libs/slick.jar libs/apache_utils_signed.jar libs/db4o-all-java5.jar" />
+			</manifest>
+		</jar>
+		<copy todir="${dist}/libs">
+			<fileset dir="lib" />
+		</copy>
+		<copy todir="${dist}/natives">
+			<fileset dir="natives">
+				<exclude name="*.jar" />
+				<exclude name="*.zip"/>
+			</fileset>
+		</copy>
+		<copy todir="${dist}">
+		    <fileset dir=".">
+		        <include name="run.*"/>
+		    </fileset>
+		</copy>
+		<copy file="${dist}/${projectName}-${DSTAMP}.jar" tofile="${dist}/${projectName}.jar"/>
+		<delete file="${dist}/${projectName}-${DSTAMP}.zip"/>
+		<zip destfile="${dist}/${projectName}-${DSTAMP}.zip" basedir="${dist}" excludes="${projectName}-${DSTAMP}.jar" />
+
+	</target>
+
+	<target name="clean" description="clean up">
+
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+</project>

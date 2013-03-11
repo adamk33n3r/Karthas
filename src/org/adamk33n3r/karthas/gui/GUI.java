@@ -249,7 +249,6 @@ public class GUI {
 			glOrtho(0, width, height, 0, 1, -1);
 			glMatrixMode(GL_MODELVIEW);
 
-			Display.update();
 			setFullscreen(fullscreen);
 
 		} catch (LWJGLException e) {

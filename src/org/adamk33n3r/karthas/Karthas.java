@@ -191,7 +191,7 @@ public class Karthas extends Applet {
 	}
 
 	/**
-	 * @param args
+	 * The main game loop
 	 */
 	public void loop() {
 		System.out.println("Starting up...");
@@ -207,12 +207,13 @@ public class Karthas extends Applet {
 		while (GUI.isRunning()) {
 			GUI.update();
 			GUI.render(false);
-
+			
 			if (Display.isCloseRequested() || closeRequested)
 				GUI.shutdown();
-
+			
 		}
 		GUI.destroy();
+		org.lwjgl.openal.AL.destroy();
 		System.exit(0);
 		//save(player, XML);
 

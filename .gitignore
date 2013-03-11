@@ -1,3 +1,5 @@
 *DS_Store*
 /bin
 /new_lwjgl
+/build
+/dist
