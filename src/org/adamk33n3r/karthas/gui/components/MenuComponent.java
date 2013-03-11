@@ -3,12 +3,14 @@ package org.adamk33n3r.karthas.gui.components;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
-import org.adamk33n3r.karthas.Karthas;
-import org.adamk33n3r.karthas.gui.GUI;
-// My imports
+//My imports
 import org.adamk33n3r.karthas.gui.Menu;
+import org.adamk33n3r.karthas.Karthas;
+import org.adamk33n3r.karthas.Resources;
+import org.adamk33n3r.karthas.SoundPlayer;
+import org.adamk33n3r.karthas.gui.GUI;
 
-public abstract class MenuComponent extends Component {
+public class MenuComponent extends Component {
 	Menu menu;
 	
 	public MenuComponent() {
@@ -32,14 +34,14 @@ public abstract class MenuComponent extends Component {
 				else if (key == Keyboard.KEY_UP)
 					menu.prevItem();
 				else if (key == Keyboard.KEY_RETURN) {
-					if(!Keyboard.isRepeatEvent())
+					if(!Keyboard.isRepeatEvent()) {
 						menu.getSelected().execute();
+					}
 				}else if (key == Keyboard.KEY_F) {
 					boolean fullscreen = !GUI.fullscreen;
 					if(fullscreen) {
 						GUI.width = Display.getDesktopDisplayMode().getWidth();
 						GUI.height = Display.getDesktopDisplayMode().getHeight();
-
 					} else {
 						GUI.width = 800;
 						GUI.height = 600;
