@@ -6,7 +6,7 @@ Karthas is a Combat RPG in the works.
 Links
 =====
 
-[Karthas.zip](https://dl.dropbox.com/u/32992090/Karthas.zip)
+[Karthas.zip](http://bit.ly/karthas-download)
 
 [Facebook Page](http://facebook.com/karthasgame)
 
