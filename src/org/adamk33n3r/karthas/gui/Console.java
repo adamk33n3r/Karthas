@@ -1,43 +1,28 @@
 package org.adamk33n3r.karthas.gui;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import org.lwjgl.input.Keyboard;
 
 // Slick imports
 import org.newdawn.slick.Color;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.AngelCodeFont;
 
-import org.adamk33n3r.karthas.Karthas;
+import org.adamk33n3r.karthas.Resources;
 // My imports
-import org.adamk33n3r.karthas.gui.components.ConfirmMenuComponent;
+import org.adamk33n3r.karthas.gui.components.ConfirmMenu;
 
 public class Console {
 
 	private static boolean running = true, returnText = true;
 
 	private static String prompt, text = "";
-	
-	private static Console con;
-	
+		
 	static AngelCodeFont font;
 
 	private Console() {
-			String file = Karthas.home + "/resources/Chalkduster20.fnt";
-			String file2 = Karthas.home + "/resources/Chalkduster20.png";
 			
-			try {
-				font = new AngelCodeFont(file, file2);
-			} catch (SlickException e) {
-				e.printStackTrace();
-			}
 	}
 
 	public static void start(String prompt) {
-		if(con == null)
-			con = new Console();
 		running = true;
 		Console.prompt = prompt;
 		text = "";
@@ -54,11 +39,10 @@ public class Console {
 	}
 	
 	public static boolean confirm() { //TODO idk why this is in console
-		Console.start("");
-		ConfirmMenuComponent comp = new ConfirmMenuComponent();
+		ConfirmMenu comp = new ConfirmMenu();
 		while(comp.getStatus() == 0) {
 			GUI.renderState();
-			GUI.drawRect(0, 0, GUI.width, GUI.height, new Color(0, 0, 0, 150));
+			GUI.drawRect(0, 0, GUI.width, GUI.height, new Color(0, 0, 0, 150)); // Makes background darker
 			comp.update();
 			comp.render();
 			GUI.render(true);
@@ -88,82 +72,32 @@ public class Console {
 						text = text.substring(0, text.length() - 1);
 					break;
 				case Keyboard.KEY_A:
-					text += 'A';
-					break;
 				case Keyboard.KEY_B:
-					text += 'B';
-					break;
 				case Keyboard.KEY_C:
-					text += 'C';
-					break;
 				case Keyboard.KEY_D:
-					text += 'D';
-					break;
 				case Keyboard.KEY_E:
-					text += 'E';
-					break;
 				case Keyboard.KEY_F:
-					text += 'F';
-					break;
 				case Keyboard.KEY_G:
-					text += 'G';
-					break;
 				case Keyboard.KEY_H:
-					text += 'H';
-					break;
 				case Keyboard.KEY_I:
-					text += 'I';
-					break;
 				case Keyboard.KEY_J:
-					text += 'J';
-					break;
 				case Keyboard.KEY_K:
-					text += 'K';
-					break;
 				case Keyboard.KEY_L:
-					text += 'L';
-					break;
 				case Keyboard.KEY_M:
-					text += 'M';
-					break;
 				case Keyboard.KEY_N:
-					text += 'N';
-					break;
 				case Keyboard.KEY_O:
-					text += 'O';
-					break;
 				case Keyboard.KEY_P:
-					text += 'P';
-					break;
 				case Keyboard.KEY_Q:
-					text += 'Q';
-					break;
 				case Keyboard.KEY_R:
-					text += 'R';
-					break;
 				case Keyboard.KEY_S:
-					text += 'S';
-					break;
 				case Keyboard.KEY_T:
-					text += 'T';
-					break;
 				case Keyboard.KEY_U:
-					text += 'U';
-					break;
 				case Keyboard.KEY_V:
-					text += 'V';
-					break;
 				case Keyboard.KEY_W:
-					text += 'W';
-					break;
 				case Keyboard.KEY_X:
-					text += 'X';
-					break;
 				case Keyboard.KEY_Y:
-					text += 'Y';
-					break;
 				case Keyboard.KEY_Z:
-					text += 'Z';
+					text += Keyboard.getKeyName(key);
 					break;
 				case Keyboard.KEY_RETURN:
 					running = false;

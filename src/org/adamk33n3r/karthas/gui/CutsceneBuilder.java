@@ -12,7 +12,7 @@ public class CutsceneBuilder {
 		LinkedList<Cutscene> list = new LinkedList<Cutscene>();
 		
 		list.add(new Cutscene(new Scene(Arrays.asList("I know what you're thinking... ~It's just another one of those RPG games. ~You go around, kill people, get experience, complete quests.",
-				"Now I'm not saying this one doesn't have these things but believe me...", "This", "One's", "Different"), (Image) Resources.get("resources/Karthas.png"))));
+				"Now I'm not saying this one doesn't have these things but believe me...", "This", "One's", "Different"), (Image) Resources.get(Resources.IMAGES.karthas))));
 		
 		return list;
 	}

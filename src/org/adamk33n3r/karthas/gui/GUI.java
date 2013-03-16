@@ -24,8 +24,6 @@ import org.newdawn.slick.SlickException;
 // My imports
 import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.Resources;
-import org.adamk33n3r.utils.Timer;
-import org.adamk33n3r.utils.TimerAction;
 
 public class GUI {
 
@@ -35,7 +33,7 @@ public class GUI {
 	public static final Color DEFAULT_FONT_COLOR = Color.yellow;
 	public static final Color DEFAULT_SELECTED_MENU_COLOR = new Color(255, 225, 0);
 	public static final Color DEFAULT_SELECTED_FONT_COLOR = Color.orange;
-	
+
 	static GUI gui = null;
 
 	static boolean running = true;
@@ -51,9 +49,10 @@ public class GUI {
 	static LinkedList<State> stateLayers;
 
 	public static int width, height;
-	public static boolean fullscreen,fullscreenChanged;
+	public static boolean fullscreen, fullscreenChanged;
 
 	public static AngelCodeFont font = null;
+	public static AngelCodeFont font2 = null;
 
 	boolean downloading;
 
@@ -71,19 +70,22 @@ public class GUI {
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
-
 		Resources.downloadInit();
-		stateMap = StateBuilder.downloading();
-		try {
-			String file = Karthas.home + "/resources/Chalkduster24.fnt";
-			String file2 = Karthas.home + "/resources/Chalkduster24.png";
-			font = new AngelCodeFont(file, file2);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
 		if (Resources.needDownload()) {
-			Karthas.printDebug("");
+			Karthas.printDebug("needs to down");
+			Resources.downloadFirst();
+			try {
+				String file = Karthas.home + "/resources/Chalkduster24.fnt";
+				String file2 = Karthas.home + "/resources/Chalkduster24.png";
+				font = new AngelCodeFont(file, file2);
+				file = Karthas.home + "/resources/Chalkduster20.fnt";
+				file2 = Karthas.home + "/resources/Chalkduster20.png";
+				font2 = new AngelCodeFont(file, file2);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+			stateMap = StateBuilder.downloading();
+			Karthas.printDebug("Downloading resources...");
 			GUI.changeTo("Downloading");
 			downloading = true;
 			new Thread() {
@@ -98,7 +100,18 @@ public class GUI {
 				GUI.update();
 				GUI.render(false);
 			}
-			GUI.goBack();
+			//GUI.goBack();
+		} else {
+			try {
+				String file = Karthas.home + "/resources/Chalkduster24.fnt";
+				String file2 = Karthas.home + "/resources/Chalkduster24.png";
+				font = new AngelCodeFont(file, file2);
+				file = Karthas.home + "/resources/Chalkduster20.fnt";
+				file2 = Karthas.home + "/resources/Chalkduster20.png";
+				font2 = new AngelCodeFont(file, file2);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
 		}
 		Resources.load();
 	}

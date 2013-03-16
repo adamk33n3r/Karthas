@@ -3,7 +3,6 @@ package org.adamk33n3r.utils.network;
 import org.adamk33n3r.karthas.entities.Actor;
 
 import com.db4o.*;
-import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.cs.Db4oClientServer;
 import com.db4o.cs.config.ClientConfiguration;
 

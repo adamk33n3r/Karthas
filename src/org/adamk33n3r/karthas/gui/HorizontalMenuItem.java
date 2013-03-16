@@ -24,14 +24,14 @@ public class HorizontalMenuItem extends MenuItem {
 		int size = firstpoint * 6 / 7;
 		int x1 = (firstpoint * (1 + position * 2)) - size / 2;
 		int x2 = x1 + size;
-		if(Resources.get("HorizontalMenuItemBack") == null)
-			Resources.set("HorizontalMenuItemBack",((ResizableImage) Resources.get("ComponentBack")).build(size, 25));
-		GUI.drawImage((Image) Resources.get("HorizontalMenuItemBack"), x1, y);
+		if(Resources.get(Resources.IMAGES.horizontalMenuItemBack) == null)
+			Resources.load(Resources.IMAGES.horizontalMenuItemBack,((ResizableImage) Resources.get(Resources.IMAGES.RESIZE.componentBack)).build(size, 25));
+		GUI.drawImage((Image) Resources.get(Resources.IMAGES.horizontalMenuItemBack), x1, y);
 		if(selected) {
 			GUI.drawRect(x1 + 5, y + 5, x2, y + 25, this.selectedColor);
 			fontColor = this.selectedFontColor;
 		}
-		GUI.drawStringCentered(x1 + size / 2, y, text, fontColor, Console.font);
+		GUI.drawStringCentered(x1 + size / 2, y, text, fontColor, GUI.font2);
 	}
 
 }

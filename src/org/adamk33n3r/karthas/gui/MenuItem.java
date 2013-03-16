@@ -106,7 +106,7 @@ public class MenuItem implements Renderable, Executable {
 			GUI.drawRect(50, y, 50 + parentMenu.getWidth(), y + 20, this.disabledColor, 5, this.borderColor);
 		else
 			//GUI.drawResizableImage((ResizableImage) Resources.get("MenuItemBackScale"), 50, y - 5, 300, 30);
-			GUI.drawImage((Image) Resources.get("MenuItemBack"), 50, y - 5);
+			GUI.drawImage((Image) Resources.get(Resources.IMAGES.menuItemBack), 50, y - 5);
 		if(selected)
 			GUI.drawRect(55, y, 55 + parentMenu.getWidth() - 5, y + 25, this.selectedColor);
 		else
@@ -119,7 +119,7 @@ public class MenuItem implements Renderable, Executable {
 	 */
 	@Override
 	public void execute() {
-		SoundPlayer.play(Resources.SOUNDS.menuExecute, 1.0f, .75f);
+		SoundPlayer.play(Resources.SOUNDS.menuExecute, 1.0f, .15f);
 		function.execute();
 	}
 

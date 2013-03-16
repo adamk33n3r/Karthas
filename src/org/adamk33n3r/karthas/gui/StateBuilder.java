@@ -6,7 +6,6 @@ import java.util.HashMap;
 // My imports
 import org.adamk33n3r.karthas.ResizableImage;
 import org.adamk33n3r.karthas.Resources;
-import org.adamk33n3r.karthas.Resources.SOUNDS;
 import org.adamk33n3r.karthas.gui.components.*;
 
 public class StateBuilder {
@@ -23,9 +22,9 @@ public class StateBuilder {
 	}
 
 	public static HashMap<String, State> build() {
-
-		stateMap.put("Title", new State(new LogoComponent(((ResizableImage) Resources.get("ComponentBack")).getImage()), new TitleMenu(),
-				new TitleText("Welcome to Karthas!")/*, new BGSoundComponent(Resources.SOUNDS.menuBG, false, 1.0f, 1.0f)*/));
+		stateMap = new HashMap<String, State>();
+		stateMap.put("Title", new State(new LogoComponent(((ResizableImage) Resources.get(Resources.IMAGES.RESIZE.componentBack)).getImage()), new TitleMenu(),
+				new TitleText("Welcome to Karthas!"), new BGSoundComponent(Resources.SOUNDS.menuBG, true, 1.0f, 1.0f)));
 
 		stateMap.put("Main", new State(new MainMenu()));
 		

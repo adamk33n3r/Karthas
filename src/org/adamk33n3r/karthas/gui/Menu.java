@@ -74,7 +74,7 @@ public class Menu implements Renderable {
 	 */
 	public void nextItem() {
 		items.get(selectedItem).selected = false;
-		SoundPlayer.play(Resources.SOUNDS.menuSelect, .5f, 1.0f);
+		SoundPlayer.play(Resources.SOUNDS.menuSelect3, 1.0f, .5f);
 		selectedItem = selectedItem == items.size() - 1 ? selectedItem : selectedItem + 1;
 		items.get(selectedItem).selected = true;
 	}
@@ -84,7 +84,7 @@ public class Menu implements Renderable {
 	 */
 	public void prevItem() {
 		items.get(selectedItem).selected = false;
-		SoundPlayer.play(Resources.SOUNDS.menuSelect, .5f, 1.0f);
+		SoundPlayer.play(Resources.SOUNDS.menuSelect3, 1.0f, .5f);
 		selectedItem = selectedItem < 1 ? selectedItem : selectedItem - 1;
 		items.get(selectedItem).selected = true;
 	}

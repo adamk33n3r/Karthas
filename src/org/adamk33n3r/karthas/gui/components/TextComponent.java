@@ -7,8 +7,8 @@ import org.newdawn.slick.Image;
 
 public class TextComponent extends Component{
 	
-	String text;
-	int x, y;
+	String text, name;
+	int x, y, width;
 	boolean centered;
 	
 	public TextComponent(String text, int x, int y, boolean centered) {
@@ -16,6 +16,11 @@ public class TextComponent extends Component{
 		this.x = x;
 		this.y = y;
 		this.centered = centered;
+		this.width = GUI.font.getWidth(text);
+		this.name = this.text.replaceAll("\\s","");
+		this.name = this.name.replaceAll("\\W","");
+		this.name = this.name.toLowerCase();
+		Resources.load(Resources.IMAGES.valueOf(name), ((ResizableImage) Resources.get(Resources.IMAGES.RESIZE.componentBack)).build(width + 25, GUI.font.getLineHeight()));
 	}
 
 	@Override
@@ -25,10 +30,7 @@ public class TextComponent extends Component{
 
 	@Override
 	public void render() {
-		int size = GUI.font.getWidth(text);
-		if (Resources.get(text) == null)
-			Resources.set(text, ((ResizableImage) Resources.get("ComponentBack")).build(size + 25, GUI.font.getLineHeight()));
-		GUI.drawImage((Image) Resources.get(text), x - size / 2 - 15, y - 6);
+		GUI.drawImage((Image) Resources.get(Resources.IMAGES.valueOf(text)), x - width / 2 - 15, y - 6);
 		if (centered)
 			GUI.drawStringCentered(x, y, text, GUI.DEFAULT_FONT_COLOR, GUI.font);
 		else
