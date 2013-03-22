@@ -5,6 +5,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.adamk33n3r.karthas.entities.Actor;
+import org.adamk33n3r.karthas.entities.Object;
 import org.adamk33n3r.utils.ZipUtil;
 
 // Apache import
@@ -22,6 +24,8 @@ public class Resources {
 	private static HashMap<IMAGES.RESIZE, ResizableImage> resizeImageMap = new HashMap<IMAGES.RESIZE, ResizableImage>();
 
 	private static HashMap<SOUNDS, Sound> soundMap = new HashMap<SOUNDS, Sound>();
+	
+	public static Area area = new Area();
 
 	public static enum IMAGES {
 		karthas, menuItemBack, horizontalMenuItemBack, downloadingresources, welcometokarthas;
@@ -43,6 +47,8 @@ public class Resources {
 	public static void load() {
 		loadSounds();
 		loadImages();
+		area.setNPCs(new Actor(1,1,"1","Monster",1,1,0,0),new Actor(200,200,"2","Monster",1,1,0,0),new Actor(30,30,"3","Monster",1,1,0,0));
+		area.setObjects(new Object(300,300,"Object 1"));
 	}
 
 	private static void loadImages() {

@@ -13,7 +13,7 @@ import org.newdawn.slick.Image;
  * @author adamk33n3r
  * 
  */
-public class MenuItem implements Renderable, Executable {
+public class MenuItem extends Renderable implements Executable {
 
 	String text = "default";
 	int position;

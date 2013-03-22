@@ -45,8 +45,8 @@ public class GUI {
 	private static double delta;
 	private static long lastTime;
 
-	static HashMap<String, State> stateMap;
-	static LinkedList<State> stateLayers;
+	static HashMap<String, Instance> stateMap;
+	static LinkedList<Instance> stateLayers;
 
 	public static int width, height;
 	public static boolean fullscreen, fullscreenChanged;
@@ -84,7 +84,7 @@ public class GUI {
 			} catch (SlickException e) {
 				e.printStackTrace();
 			}
-			stateMap = StateBuilder.downloading();
+			stateMap = InstanceBuilder.downloading();
 			Karthas.printDebug("Downloading resources...");
 			GUI.changeTo("Downloading");
 			downloading = true;
@@ -124,11 +124,11 @@ public class GUI {
 	 */
 	public static void create(String title, int width, int height) {
 		Keyboard.enableRepeatEvents(true);
-		stateLayers = new LinkedList<State>();
+		stateLayers = new LinkedList<Instance>();
 
 		gui = new GUI(title, width, height);
 
-		stateMap = StateBuilder.build();
+		stateMap = InstanceBuilder.build();
 		GUI.changeTo("Title");
 		initTime();
 		setDelta();
@@ -176,7 +176,7 @@ public class GUI {
 		Display.destroy();
 	}
 
-	public static State getCurrentState() {
+	public static Instance getCurrentState() {
 		return stateLayers.get(stateLayers.size() - 1);
 	}
 
@@ -184,7 +184,7 @@ public class GUI {
 	 * Changes the current menu
 	 * @param menu - The {@link Menu} to change to
 	 */
-	private static void changeTo(State state) {
+	private static void changeTo(Instance state) {
 		stateLayers.add(state);
 	}
 
@@ -193,7 +193,7 @@ public class GUI {
 	 * @param menuName - The name of the {@code Menu} to change to
 	 */
 	public static void changeTo(String stateName) {
-		State newState = stateMap.get(stateName);
+		Instance newState = stateMap.get(stateName);
 		if (newState != null)
 			changeTo(newState);
 		else
@@ -268,7 +268,11 @@ public class GUI {
 			System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
 		}
 	}
-
+	
+	/**
+	 * Sets fullscreen flag
+	 * @param fullscreen
+	 */
 	private static void setFullscreen(boolean fullscreen) {
 		if (GUI.fullscreen != fullscreen)
 			GUI.fullscreenChanged = true;
@@ -277,9 +281,18 @@ public class GUI {
 		GUI.fullscreen = fullscreen;
 		Karthas.printDebug("GUI is " + GUI.fullscreen + " and display is " + Display.isFullscreen());
 	}
-
+	
+	/**
+	 * Renders the current state
+	 */
 	public static void renderState() {
 		stateLayers.get(stateLayers.size() - 1).render();
+	}
+	
+	public static void drawChar(int x, int y, char ch, Color color, Font font) {
+		glEnable(GL_TEXTURE_2D);
+		font.drawString(x, y, Character.toString(ch), color);
+		glDisable(GL_TEXTURE_2D);
 	}
 
 	/**
@@ -292,12 +305,19 @@ public class GUI {
 	 */
 	public static void drawString(int x, int y, String string, Color color, Font font) {
 		glEnable(GL_TEXTURE_2D);
-
+		
 		font.drawString(x, y, string, color);
 
 		glDisable(GL_TEXTURE_2D);
 	}
-
+	/**
+	 * Renders a string to the screen, centered on x
+	 * @param x - The x location to print the text
+	 * @param y - The y location to print the text
+	 * @param string - The text to print
+	 * @param color - The color to print the text in
+	 * @param font - The font in which to print the text
+	 */
 	public static void drawStringCentered(int x, int y, String string, Color color, Font font) {
 		glEnable(GL_TEXTURE_2D);
 
@@ -305,17 +325,40 @@ public class GUI {
 
 		glDisable(GL_TEXTURE_2D);
 	}
-
+	
+	/**
+	 * Draws a rectangle
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param color
+	 */
 	public static void drawRect(int x1, int y1, int x2, int y2, Color color) {
 		setColor(color);
 		glRecti(x1, y1, x2, y2);
 	}
-
+	
+	/**
+	 * Draws a rectangle with a border
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param color
+	 * @param borderWidth
+	 * @param borderColor
+	 */
 	public static void drawRect(int x1, int y1, int x2, int y2, Color color, int borderWidth, Color borderColor) {
 		drawRect(x1 - borderWidth, y1 - borderWidth, x2 + borderWidth, y2 + borderWidth, borderColor);
 		drawRect(x1, y1, x2, y2, color);
 	}
-
+	 
+	/**
+	 * Draws a polygon
+	 * @param color
+	 * @param points - Points to draw
+	 */
 	public static void drawPolygon(Color color, Point... points) {
 		setColor(color);
 		glBegin(GL_POLYGON);
@@ -323,16 +366,31 @@ public class GUI {
 			glVertex2f(points[i].x, points[i].y);
 		glEnd();
 	}
-
+	
+	/**
+	 * Renders image to screen at x,y, keeping size
+	 * @param img - The image to render
+	 * @param x
+	 * @param y
+	 */
 	public static void drawImage(Image img, int x, int y) {
 		img.draw(x, y);
 		glDisable(GL_TEXTURE_2D);
 	}
-
+	
+	/**
+	 * Renders an image stretched fullscreen
+	 * @param img - The image to render
+	 */
 	public static void drawImageFull(Image img) {
 		img.draw(0, 0, width, height);
+		glDisable(GL_TEXTURE_2D);
 	}
-
+	
+	/**
+	 * Renders an image stretched to fullscreen while maintaining aspect ratio
+	 * @param img
+	 */
 	public static void drawImageFullToScale(Image img) {
 		int tw = 0, th = 0;
 		while (tw < width && th < height) {

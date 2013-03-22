@@ -118,9 +118,9 @@ public class Console {
 		int centerx = GUI.width / 2;
 		int centery = GUI.height / 2;
 		GUI.drawRect(centerx / 4, centery - 30, centerx * 7 / 4, centery, Color.blue, 5, Color.gray);
-		GUI.drawString(centerx / 4 + 10, centery - 27, prompt + ": " + text + "_", Color.green, font);
-		GUI.drawString(centerx / 4 + 5, centery + 10, "<ENTER> to Confirm", Color.green, font);
-		GUI.drawString(centerx * 7 / 4 - 185, centery + 10, "<ESC> to Cancel", Color.green, font);
+		GUI.drawString(centerx / 4 + 10, centery - 27, prompt + ": " + text + "_", Color.green, GUI.font);
+		GUI.drawString(centerx / 4 + 5, centery + 10, "<ENTER> to Confirm", Color.green, GUI.font);
+		GUI.drawString(centerx * 7 / 4 - 185, centery + 10, "<ESC> to Cancel", Color.green, GUI.font);
 		GUI.render(true);
 	}
 

@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import org.adamk33n3r.karthas.Renderable;
 import org.adamk33n3r.karthas.gui.Scene.SceneText;
 
-public class Cutscene implements Renderable {
+public class Cutscene extends Renderable {
 
 	LinkedList<Scene> scenes;
 

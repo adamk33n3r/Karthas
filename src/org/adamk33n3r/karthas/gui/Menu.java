@@ -14,13 +14,10 @@ import org.adamk33n3r.karthas.SoundPlayer;
  * @author adamk33n3r
  *
  */
-public class Menu implements Renderable {
+public class Menu extends Renderable {
 
 	public ArrayList<MenuItem> items = new ArrayList<MenuItem>();
 	private int selectedItem = -1;
-
-	private int width;
-	private int height;
 	
 	/**
 	 * Creates a {@code Menu}
@@ -38,7 +35,7 @@ public class Menu implements Renderable {
 			selectedItem = 0;
 			this.items.get(selectedItem).selected = true;
 		}
-		setHeight(this.items.size() * 25 - 5);
+		setHeight(this.items.size() * 25);
 	}
 	
 	/**
@@ -48,17 +45,9 @@ public class Menu implements Renderable {
 	public void addItem(MenuItem item) {
 		items.add(item);
 	}
-	
-	public int getHeight() {
-		return height;
-	}
 
 	public void setHeight(int height) {
 		this.height = height;
-	}
-
-	public int getWidth() {
-		return width;
 	}
 
 	public void setWidth(int width) {

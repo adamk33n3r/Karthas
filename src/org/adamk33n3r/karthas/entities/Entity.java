@@ -1,12 +1,14 @@
 package org.adamk33n3r.karthas.entities;
 
+import org.adamk33n3r.karthas.Renderable;
+
 /**
  * Entity is the superclass of the entities within Karthas
  * @author adamk33n3r
  *
  */
 
-public abstract class Entity implements java.io.Serializable {
+public abstract class Entity extends Renderable implements java.io.Serializable{
 	/**
 	 * Version
 	 */
@@ -46,6 +48,16 @@ public abstract class Entity implements java.io.Serializable {
 	 */
 	public void setPosy(int posy) {
 		this.posy = posy;
+	}
+	
+	/**
+	 * Returns true if Entity is within the bounds from 0 -> width and 0 -> height
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public boolean isInBounds(int width, int height) {
+		return this.posx < width && this.posx >= 0 && this.posy < height && this.posy >= 0;
 	}
 
 	/**

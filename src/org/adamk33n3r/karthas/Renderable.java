@@ -5,16 +5,27 @@ package org.adamk33n3r.karthas;
  * @author adamk33n3r
  *
  */
-public interface Renderable {
+public abstract class Renderable {
+	
+	protected int width;
+	protected int height;
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
 	
 	/**
 	 * Function to update
 	 */
-	public void update();
+	public abstract void update();
 	
 	/**
 	 * Function to render
 	 */
-	public void render();
+	public abstract void render();
 	
 }
