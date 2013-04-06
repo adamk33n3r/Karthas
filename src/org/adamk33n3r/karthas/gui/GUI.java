@@ -21,6 +21,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
+import org.adamk33n3r.karthas.Action;
+import org.adamk33n3r.karthas.InputAction;
 // My imports
 import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.Resources;
@@ -39,7 +41,6 @@ public class GUI extends Layer{
 	static GUI gui = null;
 
 	static boolean running = true;
-	static boolean checkInput = false;
 
 	private static long lastFrame;
 	private static int fps, curFPS;
@@ -54,6 +55,10 @@ public class GUI extends Layer{
 
 	public static AngelCodeFont font = null;
 	public static AngelCodeFont font2 = null;
+	
+	private static boolean inputCheck = false;
+	private static StringBuilder inputText;
+	private static InputAction inputAction;
 
 	boolean downloading;
 
@@ -85,7 +90,7 @@ public class GUI extends Layer{
 			}
 			stateMap = LayerBuilder.downloading();
 			Karthas.printDebug("Downloading resources...");
-			GUI.addLayer("Downloading");
+			//GUI.addLayer("Downloading");
 			downloading = true;
 			new Thread() {
 				@Override
@@ -96,8 +101,8 @@ public class GUI extends Layer{
 			}.start();
 
 			while (downloading) {
-				update();
-				gui.render();
+				//update();
+				//gui.render();
 			}
 			//GUI.goBack();
 		} else {
@@ -175,15 +180,15 @@ public class GUI extends Layer{
 		Display.destroy();
 	}
 
-	public static Layer getCurrentState() {
-		return layers.get(layers.size() - 1);
+	public static Layer getCurrentLayer() {
+		return layers.peekLast();
 	}
 
 	/**
 	 * Changes the current layer
 	 * @param menu - The {@link Menu} to change to
 	 */
-	private static void addLayer(Layer state) {
+	public static void addLayer(Layer state) {
 		layers.add(state);
 	}
 
@@ -200,7 +205,7 @@ public class GUI extends Layer{
 	}
 
 	public static void goBack() {
-		layers.pop();
+		layers.pollLast();
 	}
 
 	/**
@@ -412,22 +417,12 @@ public class GUI extends Layer{
 	 * Gets input from the user using {@link Console}
 	 * @param prompt - The prompt
 	 * @param text - The {@code String} to set the input to
-	 * @param parent - The {@code Layer} to display underneath
+	 * @param action - The code to execute once the input has been retrieved
 	 */
-	public static void newConsole(String prompt, String text) {
+	public static void newConsole(String prompt, StringBuilder text, InputAction action) {
 		addLayer(new Console(prompt, text, layers.getLast()));
-		checkInput = true;
-		/*if(!input.equals("")) {				// New
-			Actor player = Karthas.init(input);
-			Karthas.save(player, true);
-			System.out.println("dsdfa");
-			GUI.addLayer("Main");
-		}
-		if(!in.equals("")) {					// Load
-			Karthas.load(in, true);
-			if (Karthas.getPlayer() != null)
-				GUI.addLayer("Main");
-		}*/
+		inputText = text;
+		inputAction = action;
 	}
 	
 	/*public static String getCurrentConsoleText() {
@@ -435,9 +430,13 @@ public class GUI extends Layer{
 		layers.pop();
 		return string;
 	}*/
+	
+	public static void setInputCheck() {
+		inputCheck = true;
+	}
 
 	public static void getUserConfirmation(Layer parent) {
-		addLayer(new ConfirmPopup(parent));
+		//addLayer(new ConfirmPopup(parent));
 	}
 
 	/**
@@ -446,8 +445,9 @@ public class GUI extends Layer{
 	@Override
 	public void update() {
 		
-		if (layers.getLast() instanceof Console) {
-			
+		if (inputCheck) {
+			inputAction.execute(inputText);
+			inputCheck = false;
 		}
 
 		if (Display.wasResized()) {

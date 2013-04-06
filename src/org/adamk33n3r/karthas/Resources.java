@@ -28,7 +28,7 @@ public class Resources {
 	public static Area area = new Area();
 
 	public static enum IMAGES {
-		karthas, menuItemBack, horizontalMenuItemBack, downloadingresources, welcometokarthas;
+		karthas, playerdoesnotexist, menuItemBack, horizontalMenuItemBack, downloadingresources, welcometokarthas;
 		public static enum RESIZE {
 			componentBack
 		}

@@ -9,13 +9,14 @@ import org.newdawn.slick.Color;
 
 public class ConsoleComponent extends Component {
 	
-	private String prompt, text;
+	private String prompt;
+	private StringBuilder text;
 	
 	//private AngelCodeFont font;
 	
 	private boolean running = true;
 	
-	public ConsoleComponent(String prompt, String text, Layer parent) {
+	public ConsoleComponent(String prompt, StringBuilder text, Layer parent) {
 		//super(parent);
 		this.prompt = prompt;
 		this.text = text;
@@ -29,7 +30,7 @@ public class ConsoleComponent extends Component {
 	@Override
 	public void update() {
 		try {
-			if (Input.process(text, this))
+			if (Input.processText(text, this))
 				running = false;
 		} catch (InputLockedException e) {
 			System.out.println("Input is locked");

@@ -1,5 +1,6 @@
 package org.adamk33n3r.karthas.gui;
 
+import org.adamk33n3r.karthas.Action;
 import org.adamk33n3r.karthas.Executable;
 import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.gui.components.Component;
@@ -10,7 +11,7 @@ import org.adamk33n3r.karthas.gui.components.Component;
  *
  */
 
-public interface MenuItemAction extends Executable {
+public interface MenuItemAction extends Action {
 	
 	//protected Component parent;
 	
@@ -45,7 +46,7 @@ public interface MenuItemAction extends Executable {
 		
 		private boolean confirm() {
 			GUI.getUserConfirmation(null);
-			return false;
+			return true;
 		}
 
 	};

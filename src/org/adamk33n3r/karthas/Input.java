@@ -1,7 +1,10 @@
 package org.adamk33n3r.karthas;
 
+import org.adamk33n3r.karthas.gui.GUI;
+import org.adamk33n3r.karthas.gui.Menu;
 import org.adamk33n3r.karthas.gui.components.Component;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
 
 public class Input {
 	
@@ -27,8 +30,51 @@ public class Input {
 		}
 	}
 	
-	public static boolean process(String text, Component comp) throws InputLockedException {
-		if (locked && lockedBy != comp)
+	private static boolean isRestricted(Component owner) {
+		return locked && lockedBy != owner;
+	}
+	
+	public static void processMenu(Menu menu, Component owner) throws InputLockedException {
+		if (isRestricted(owner))
+			throw new InputLockedException("Input is locked by " + lockedBy);
+		while (Keyboard.next()) {
+			if (Keyboard.getEventKeyState()) {
+				int key = Keyboard.getEventKey();
+				if (key >= Keyboard.KEY_1 && key < Keyboard.KEY_0) {
+					menu.toItem(key - 1);
+					menu.getSelected().execute();
+				} else {
+					switch (key) {
+						case Keyboard.KEY_DOWN:
+							menu.nextItem();
+							break;
+						case Keyboard.KEY_UP:
+							menu.prevItem();
+							break;
+						case Keyboard.KEY_RETURN:
+							if (!Keyboard.isRepeatEvent())
+								menu.getSelected().execute();
+							break;
+						case Keyboard.KEY_F:
+							boolean fullscreen = !GUI.fullscreen;
+							if (fullscreen) {
+								GUI.width = Display.getDesktopDisplayMode().getWidth();
+								GUI.height = Display.getDesktopDisplayMode().getHeight();
+							} else {
+								GUI.width = 800;
+								GUI.height = 600;
+							}
+							GUI.setDisplayMode(GUI.width, GUI.height, fullscreen);
+							Karthas.printDebug("Switched fullscreen to: " + fullscreen + " With: " + Display.getDisplayMode());
+							break;
+					}
+				}
+			}
+		}
+	}
+	
+	public static boolean processText(StringBuilder text, Component owner) throws InputLockedException {
+		if (isRestricted(owner))
 				throw new InputLockedException("Input is locked by " + lockedBy); // TODO: Register input or something
 
 		if (Keyboard.next() && Keyboard.getEventKeyState()) {
@@ -36,18 +82,18 @@ public class Input {
 			switch (key) {
 				case Keyboard.KEY_1:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-						text += '!';
+						text.append('!');
 					break;
 				case Keyboard.KEY_SLASH:
 					if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-						text += '?';
+						text.append('?');
 					break;
 				case Keyboard.KEY_SPACE:
-					text += ' ';
+					text.append(' ');
 					break;
 				case Keyboard.KEY_BACK:
 					if (text.length() > 0)
-						text = text.substring(0, text.length() - 1);
+						text.delete(text.length() - 1, text.length());
 					break;
 				case Keyboard.KEY_A:
 				case Keyboard.KEY_B:
@@ -75,15 +121,16 @@ public class Input {
 				case Keyboard.KEY_X:
 				case Keyboard.KEY_Y:
 				case Keyboard.KEY_Z:
-					text += Keyboard.getKeyName(key);
+					text = text.append(Keyboard.getKeyName(key));
 					break;
 				case Keyboard.KEY_RETURN:
 					return true;
 				case Keyboard.KEY_ESCAPE:
-					text = "";
+					text.setLength(0);
 					return true;
 					
 			}
+
 			return false;
 		}
 		return false;

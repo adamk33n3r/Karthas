@@ -8,6 +8,7 @@ import java.util.Iterator;
 import org.adamk33n3r.karthas.Renderable;
 import org.adamk33n3r.karthas.Resources;
 import org.adamk33n3r.karthas.SoundPlayer;
+import org.adamk33n3r.karthas.gui.components.Component;
 
 /**
  * A class that defines a menu that contains {@link MenuItem}s

@@ -2,7 +2,7 @@ package org.adamk33n3r.karthas.gui;
 
 import org.adamk33n3r.karthas.gui.components.Component;
 
-public abstract class Popup extends Layer {
+public class Popup extends Layer {
 	
 	Layer parent;
 	

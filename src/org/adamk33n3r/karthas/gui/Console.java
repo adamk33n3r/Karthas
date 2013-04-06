@@ -1,5 +1,6 @@
 package org.adamk33n3r.karthas.gui;
 
+import org.adamk33n3r.karthas.Input;
 import org.adamk33n3r.karthas.gui.components.ConsoleComponent;
 
 public class Console extends Popup {
@@ -10,7 +11,7 @@ public class Console extends Popup {
 	 * @param text - The {@code String} to edit
 	 * @param parent - The {@code Layer} to display underneath
 	 */
-	public Console(String prompt, String text, Layer parent) {
+	public Console(String prompt, StringBuilder text, Layer parent) {
 		super(parent, new ConsoleComponent(prompt, text, parent));
 	}
 	
@@ -31,8 +32,11 @@ public class Console extends Popup {
 	@Override
 	public void update() {
 		super.update();
-		if (!((ConsoleComponent) children[0]).isRunning())
+		if (!((ConsoleComponent) children[0]).isRunning()) {
+			Input.unlock(children[0]);
+			GUI.setInputCheck();
 			GUI.goBack();
+		}
 	}
 
 }
