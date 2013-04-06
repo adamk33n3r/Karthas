@@ -24,8 +24,10 @@ import org.newdawn.slick.SlickException;
 // My imports
 import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.Resources;
+import org.adamk33n3r.karthas.entities.Actor;
+import org.adamk33n3r.karthas.gui.components.ConsoleComponent;
 
-public class GUI {
+public class GUI extends Layer{
 
 	public static final Color DEFAULT_MENU_COLOR = Color.blue;
 	public static final Color DEFAULT_DISABLED_COLOR = Color.gray;
@@ -37,16 +39,15 @@ public class GUI {
 	static GUI gui = null;
 
 	static boolean running = true;
-	static boolean console = false;
-	public static boolean applet = false;
+	static boolean checkInput = false;
 
 	private static long lastFrame;
 	private static int fps, curFPS;
 	private static double delta;
 	private static long lastTime;
 
-	static HashMap<String, Instance> stateMap;
-	static LinkedList<Instance> stateLayers;
+	static HashMap<String, Layer> stateMap;
+	static LinkedList<Layer> layers;
 
 	public static int width, height;
 	public static boolean fullscreen, fullscreenChanged;
@@ -63,8 +64,6 @@ public class GUI {
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setTitle(title);
-			if (!applet)
-				Display.setResizable(true);
 			Display.create();
 			initGL();
 		} catch (LWJGLException e) {
@@ -84,9 +83,9 @@ public class GUI {
 			} catch (SlickException e) {
 				e.printStackTrace();
 			}
-			stateMap = InstanceBuilder.downloading();
+			stateMap = LayerBuilder.downloading();
 			Karthas.printDebug("Downloading resources...");
-			GUI.changeTo("Downloading");
+			GUI.addLayer("Downloading");
 			downloading = true;
 			new Thread() {
 				@Override
@@ -97,8 +96,8 @@ public class GUI {
 			}.start();
 
 			while (downloading) {
-				GUI.update();
-				GUI.render(false);
+				update();
+				gui.render();
 			}
 			//GUI.goBack();
 		} else {
@@ -122,18 +121,18 @@ public class GUI {
 	 * @param width - The width of the {@code GUI}
 	 * @param height - The height of the {@code GUI}
 	 */
-	public static void create(String title, int width, int height) {
+	public static GUI create(String title, int width, int height) {
 		Keyboard.enableRepeatEvents(true);
-		stateLayers = new LinkedList<Instance>();
+		layers = new LinkedList<Layer>();
 
 		gui = new GUI(title, width, height);
 
-		stateMap = InstanceBuilder.build();
-		GUI.changeTo("Title");
+		stateMap = LayerBuilder.build();
+		GUI.addLayer("Title");
 		initTime();
 		setDelta();
 		//GUI.changeTo("Downloading");
-
+		return gui;
 	}
 
 	private static void initGL() {
@@ -165,43 +164,43 @@ public class GUI {
 	/**
 	 * Sets the state of the {@code GUI} to not running in order to shutdown
 	 */
-	public static void shutdown() {
+	public void shutdown() {
 		running = false;
 	}
 
 	/**
 	 * Destroys the display
 	 */
-	public static void destroy() {
+	public void destroy() {
 		Display.destroy();
 	}
 
-	public static Instance getCurrentState() {
-		return stateLayers.get(stateLayers.size() - 1);
+	public static Layer getCurrentState() {
+		return layers.get(layers.size() - 1);
 	}
 
 	/**
-	 * Changes the current menu
+	 * Changes the current layer
 	 * @param menu - The {@link Menu} to change to
 	 */
-	private static void changeTo(Instance state) {
-		stateLayers.add(state);
+	private static void addLayer(Layer state) {
+		layers.add(state);
 	}
 
 	/**
-	 * Changes the current menu
+	 * Changes the current layer
 	 * @param menuName - The name of the {@code Menu} to change to
 	 */
-	public static void changeTo(String stateName) {
-		Instance newState = stateMap.get(stateName);
+	public static void addLayer(String stateName) {
+		Layer newState = stateMap.get(stateName);
 		if (newState != null)
-			changeTo(newState);
+			addLayer(newState);
 		else
 			System.err.println("Can't find state!");
 	}
 
 	public static void goBack() {
-		stateLayers.pop();
+		layers.pop();
 	}
 
 	/**
@@ -286,7 +285,7 @@ public class GUI {
 	 * Renders the current state
 	 */
 	public static void renderState() {
-		stateLayers.get(stateLayers.size() - 1).render();
+		layers.get(layers.size() - 1).render();
 	}
 	
 	public static void drawChar(int x, int y, char ch, Color color, Font font) {
@@ -411,32 +410,47 @@ public class GUI {
 
 	/**
 	 * Gets input from the user using {@link Console}
+	 * @param prompt - The prompt
+	 * @param text - The {@code String} to set the input to
+	 * @param parent - The {@code Layer} to display underneath
 	 */
-	public static String getInput(String prompt) {
-		console = true;
-		Console.start(prompt);
-		while (Console.isRunning()) {
-			if (Display.isCloseRequested()) {
-				shutdown();
-				break;
-			}
-			Console.update();
-			Console.render();
+	public static void newConsole(String prompt, String text) {
+		addLayer(new Console(prompt, text, layers.getLast()));
+		checkInput = true;
+		/*if(!input.equals("")) {				// New
+			Actor player = Karthas.init(input);
+			Karthas.save(player, true);
+			System.out.println("dsdfa");
+			GUI.addLayer("Main");
 		}
-		console = false;
-		return Console.getInput();
+		if(!in.equals("")) {					// Load
+			Karthas.load(in, true);
+			if (Karthas.getPlayer() != null)
+				GUI.addLayer("Main");
+		}*/
 	}
+	
+	/*public static String getCurrentConsoleText() {
+		String string = ((ConsoleComponent)((Popup) layers.getLast()).children[0]).getText();
+		layers.pop();
+		return string;
+	}*/
 
-	public static boolean confirm() {
-		return Console.confirm();
+	public static void getUserConfirmation(Layer parent) {
+		addLayer(new ConfirmPopup(parent));
 	}
 
 	/**
 	 * Updates. Keyboard events
 	 */
-	public static void update() {
+	@Override
+	public void update() {
+		
+		if (layers.getLast() instanceof Console) {
+			
+		}
 
-		if (!applet && Display.wasResized()) {
+		if (Display.wasResized()) {
 			width = Display.getWidth();
 			height = Display.getHeight();
 			glMatrixMode(GL_PROJECTION);
@@ -460,8 +474,7 @@ public class GUI {
 			curFPS = 0;
 		}
 		curFPS++;
-		if (!console)
-			stateLayers.get(stateLayers.size() - 1).update();
+		layers.getLast().update();
 		Display.setTitle("Karthas - FPS: " + getFPS());
 	}
 
@@ -469,12 +482,12 @@ public class GUI {
 	 * Renders the {@code GUI}
 	 * @param onlyUpdate If true, will only update display
 	 */
-	public static void render(boolean updateOnly) {
+	@Override
+	public void render() {
 		setDelta();
 		//glRecti(50, 50, 100, 100);
 		renderDebug();
-		if (!updateOnly)
-			stateLayers.get(stateLayers.size() - 1).render();
+		layers.getLast().render();
 		Display.update();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		Display.sync(60);

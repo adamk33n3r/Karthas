@@ -18,6 +18,10 @@ public abstract class Renderable {
 		return height;
 	}
 	
+	public Karthas getSystem() {
+		return Karthas.getKarthas();
+	}
+	
 	/**
 	 * Function to update
 	 */

@@ -1,7 +1,5 @@
 package org.adamk33n3r.karthas.gui.components;
 
-import org.adamk33n3r.karthas.Karthas;
-import org.adamk33n3r.karthas.entities.Actor;
 import org.adamk33n3r.karthas.gui.GUI;
 import org.adamk33n3r.karthas.gui.Menu;
 import org.adamk33n3r.karthas.gui.MenuItem;
@@ -14,24 +12,15 @@ public class TitleMenu extends MenuComponent {
 
 			@Override
 			public void execute() {
-				String in = GUI.getInput("Enter new character name");
-				if(!in.equals("")) {
-					Actor player = Karthas.init(in);
-					Karthas.save(player, true);
-					System.out.println("dsdfa");
-					GUI.changeTo("Main");
-				}
+				String input = "";
+				GUI.newConsole("Enter new character name", input);
 			}
 		}), new MenuItem("Load Game", new MenuItemAction() {
 
 			@Override
 			public void execute() {
-				String in = GUI.getInput("Enter character to load");
-				if(!in.equals("")) {
-					Karthas.load(in, true);
-					if (Karthas.getPlayer() != null)
-						GUI.changeTo("Main");
-				}
+				String input = "";
+				GUI.newConsole("Enter character to load", input);
 			}
 			
 		}), new MenuItem("Quit", MenuItemAction.EXIT));

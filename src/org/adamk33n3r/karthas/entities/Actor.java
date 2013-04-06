@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
+import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.gui.GUI;
 import org.newdawn.slick.Color;
 
@@ -151,7 +152,7 @@ public class Actor extends Entity {
 			System.out.println(this.version + " compared to " + Actor.NUM_OF_FIELDS + " fields");
 			if (this.version < Actor.NUM_OF_FIELDS) {
 				System.err.println("Old version");
-				GUI.shutdown();
+				Karthas.getKarthas().shutdown();
 			} else if (this.version > Actor.NUM_OF_FIELDS) {
 				
 			}

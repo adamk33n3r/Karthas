@@ -8,12 +8,8 @@ import org.adamk33n3r.karthas.gui.Menu;
 import org.adamk33n3r.karthas.Karthas;
 import org.adamk33n3r.karthas.gui.GUI;
 
-public class MenuComponent extends Component {
+public abstract class MenuComponent extends Component {
 	Menu menu;
-	
-	public MenuComponent() {
-		type = Component.Type.MENU;
-	}
 	
 	public Menu getMenu() {
 		return menu;

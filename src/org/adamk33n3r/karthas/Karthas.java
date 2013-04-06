@@ -35,117 +35,17 @@ public class Karthas extends Applet {
 	static String codeBase;
 	public static String home, sep;
 	
-	JFrame frame;
-
+	private static Karthas self;
+	private GUI gui;
+	
 	static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-	Canvas display_parent;
-	Thread gameThread;
 
-	public void startGame() {
-		gameThread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					Display.setParent(display_parent);
-				} catch (LWJGLException e) {
-					e.printStackTrace();
-				}GUI.applet = true;
-				GUI.create("Karthas", 800, 600);
-				/*LinkedList<Cutscene> s = CutsceneBuilder.build();
-				while (s.get(0).isRunning()) {
-					s.get(0).update();
-					s.get(0).render();
-					Display.update();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-					Display.sync(60);
-				}*/
-				loop();
-			}
-		};
-		gameThread.start();
-	}
+	public static void startAsApp() {
+		self = new Karthas();
+		self.setUp();
+		self.gui = GUI.create("Karthas", 800, 600);
 
-	public void stopGame() {
-		try {
-			gameThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}frame.dispose();
-	}
-
-	@Override
-	public void start() {
-		setUp();
-		add(display_parent);
-		display_parent.setFocusable(true);
-		display_parent.requestFocus();
-		display_parent.setIgnoreRepaint(true);
-		setVisible(true);
-	}
-
-	public void startAsApp() {
-		/*frame = new JFrame("Karthas");
-		setUp();
-		frame.setLayout(new BorderLayout());
-		//frame.setSize(1600, 1200);
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				closeRequested = true;
-			}
-		});
-		try {
-			display_parent = new Canvas() {
-				private static final long serialVersionUID = -8338114538157335277L;
-
-				public final void addNotify() {
-					super.addNotify();
-					startGame();
-				}
-
-				public final void removeNotify() {
-					stopGame();
-					super.removeNotify();
-				}
-			};
-			display_parent.setSize(400, 300);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Unable to create display");
-		}frame.add(display_parent, BorderLayout.CENTER);
-		frame.setPreferredSize(new Dimension(800, 600));
-		frame.pack();
-		display_parent.setFocusable(true);
-		//display_parent.requestFocus();
-		display_parent.setIgnoreRepaint(true);
-		frame.setVisible(true);*/
-		
-		
-		setUp();
-		GUI.create("Karthas", 800, 600);
-
-		/*LinkedList<Cutscene> s = CutsceneBuilder.build();
-		while (s.get(0).isRunning()) {
-			s.get(0).update();
-			s.get(0).render();
-			Display.update();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Display.sync(60);
-		}*/
-
-		loop();
-	}
-
-	@Override
-	public void stop() {
-
-	}
-
-	@Override
-	public void destroy() {
-		remove(display_parent);
-		super.destroy();
+		self.loop();
 	}
 
 	private void setUp() {
@@ -157,63 +57,27 @@ public class Karthas extends Applet {
 		return codeBase != null ? codeBase : "file:///" + System.getProperty("user.dir") + "/";
 	}
 
-	@Override
-	public void init() {
-		codeBase = getCodeBase().toString();
-		setUp();
-		setLayout(new BorderLayout());
-		//setSize(1280, 800);
-		try {
-			display_parent = new Canvas() {
-				private static final long serialVersionUID = -8338114538157335277L;
-
-				@Override
-				public final void addNotify() {
-					super.addNotify();
-					startGame();
-				}
-
-				@Override
-				public final void removeNotify() {
-					stopGame();
-					super.removeNotify();
-				}
-			};
-			display_parent.setSize(800, 600);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Unable to create display");
-		}
-	}
-
 	/**
 	 * The main game loop
 	 */
 	public void loop() {
 		System.out.println("Starting up...");
-		
-		/*try {
-			init();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-
-		//printSystemMessage(player);
 
 		while (GUI.isRunning()) {
-			GUI.update();
-			GUI.render(false);
+			gui.update();
+			gui.render();
 			
 			if (Display.isCloseRequested() || closeRequested)
-				GUI.shutdown();
-			
+				gui.shutdown();
 		}
-		GUI.destroy();
+		gui.destroy();
 		org.lwjgl.openal.AL.destroy();
 		System.exit(0);
 		//save(player, XML);
-
+	}
+	
+	public void shutdown() {
+		this.gui.shutdown();
 	}
 
 	/**
@@ -294,33 +158,14 @@ public class Karthas extends Applet {
 		return true;
 	}
 
-	/**
-	 * Helper function to print the Main Menu
-	 */
-
-	@SuppressWarnings("unused")
-	private static void printMainMenu() {
-		printSystemMessage("1. ~Attack\n2. Print Stats\n3. Save\n4. Quit");
-		printPrompt();
+	public static Object getPlayer() {
+		return player;
 	}
-
-	/**
-	 * Helper function to print a message to the console
-	 * @param msg - Message to print
-	 */
-
-	private static void printSystemMessage(Object msg) {
-		System.out.println(msg);
+	
+	public static Karthas getKarthas() {
+		return self;
 	}
-
-	/**
-	 * Helper function to print a prompt
-	 */
-
-	private static void printPrompt() {
-		System.out.print(">>> ");
-	}
-
+	
 	/**
 	 * Helper function to print an error message
 	 * @param error - Error to be printed
@@ -329,19 +174,6 @@ public class Karthas extends Applet {
 	public static void printSystemError(String error) {
 		System.err.println("Error: " + error);
 	}
-
-	public static Object getPlayer() {
-		return player;
-	}
-
-	public static void sleep(int millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static void printDebug(String string) {
 		if (Karthas.DEBUG)
 			System.out.println(string);

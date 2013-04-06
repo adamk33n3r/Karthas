@@ -6,28 +6,23 @@ import org.adamk33n3r.karthas.gui.MenuItemAction;
 
 public class ConfirmMenu extends HorizontalMenuComponent {
 	
-	int status = 0;
 	
 	public ConfirmMenu() {
 		menu = new Menu(new HorizontalMenuItem("No", new MenuItemAction() {
 
 			@Override
 			public void execute() {
-				status = -1;
+				//return -1;
 			}
 			
 		}), new HorizontalMenuItem("Maybe"), new HorizontalMenuItem("Yes", new MenuItemAction() {
 
 			@Override
 			public void execute() {
-				status = 1;
+				//return 1;
 			}
 			
 		}));
-	}
-	
-	public int getStatus() {
-		return status;
 	}
 	
 }

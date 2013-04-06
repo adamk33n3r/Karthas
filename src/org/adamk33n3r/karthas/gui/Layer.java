@@ -9,11 +9,11 @@ import org.adamk33n3r.karthas.gui.components.Component;
 import org.adamk33n3r.karthas.gui.components.Component.Type;
 import org.adamk33n3r.karthas.gui.components.MenuComponent;
 
-public class Instance extends Renderable{
+public class Layer extends Renderable {
 		
 	HashMap<Component.Type, Component> components;
 	
-	public Instance(Component... components) {
+	public Layer(Component... components) {
 		this.components = new HashMap<Component.Type, Component>();
 		for(int i = 0; i< components.length; i++) {
 			this.components.put(components[i].getType(), components[i]);
