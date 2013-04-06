@@ -30,7 +30,7 @@ public class TextComponent extends Component{
 
 	@Override
 	public void render() {
-		GUI.drawImage((Image) Resources.get(Resources.IMAGES.valueOf(text)), x - width / 2 - 15, y - 6);
+		GUI.drawImage((Image) Resources.get(Resources.IMAGES.valueOf(name)), x - width / 2 - 15, y - 6);
 		if (centered)
 			GUI.drawStringCentered(x, y, text, GUI.DEFAULT_FONT_COLOR, GUI.font);
 		else
