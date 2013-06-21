@@ -58,6 +58,12 @@
 		<delete file="${dist}/${projectName}-${DSTAMP}.zip"/>
 		<zip destfile="${dist}/${projectName}-${DSTAMP}.zip" basedir="${dist}" excludes="${projectName}-${DSTAMP}.jar" />
 		<copy file="${dist}/${projectName}-${DSTAMP}.zip" tofile="/Users/k33n3r/Google Drive/Karthas/${projectName}-${DSTAMP}.zip" />
+		<copy file="${dist}/${projectName}-${DSTAMP}.zip" tofile="/Volumes/adam-keenan.net/ftp/projects/Karthas/${projectName}-${DSTAMP}.zip" />
+				<!--<ftp server="adam-keenan.net" userid="adam-keenan" password="nike27nike27" remotedir="ftp" action="put" >
+		    <fileset dir="${dist}">
+		        <include name="${projectName}-${DSTAMP}.zip"/>
+		    </fileset>
+		</ftp>-->
 
 	</target>
 

@@ -414,13 +414,13 @@ public class GUI extends Layer{
 	}
 
 	/**
-	 * Gets input from the user using {@link Console}
+	 * Gets input from the user using {@link ConsolePopup}
 	 * @param prompt - The prompt
 	 * @param text - The {@code String} to set the input to
 	 * @param action - The code to execute once the input has been retrieved
 	 */
 	public static void newConsole(String prompt, StringBuilder text, InputAction action) {
-		addLayer(new Console(prompt, text, layers.getLast()));
+		addLayer(new ConsolePopup(prompt, text, layers.getLast()));
 		inputText = text;
 		inputAction = action;
 	}

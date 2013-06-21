@@ -12,17 +12,6 @@ import org.adamk33n3r.karthas.gui.Popup;
 public class TitleMenu extends MenuComponent {
 	
 	public TitleMenu() {
-		/*if(!input.equals("")) {				// New
-		Actor player = Karthas.init(input);
-		Karthas.save(player, true);
-		System.out.println("dsdfa");
-		GUI.addLayer("Main");
-	}
-	if(!in.equals("")) {					// Load
-		Karthas.load(in, true);
-		if (Karthas.getPlayer() != null)
-			GUI.addLayer("Main");
-	}*/
 		menu = new Menu(new MenuItem("New Game", new MenuItemAction() {
 
 			@Override
@@ -37,7 +26,7 @@ public class TitleMenu extends MenuComponent {
 
 					@Override
 					public void execute(StringBuilder input) {
-						if(!input.toString().equals("")) {				// New
+						if(!input.toString().equals("")) {
 							Actor player = Karthas.init(input.toString());
 							Karthas.save(player, true);
 							System.out.println("dsdfa");
@@ -60,7 +49,7 @@ public class TitleMenu extends MenuComponent {
 
 					@Override
 					public void execute(StringBuilder input) {
-						if(!input.toString().equals("")) {					// Load
+						if(!input.toString().equals("")) {
 							Karthas.load(input.toString(), true);
 							if (Karthas.getPlayer() != null)
 								GUI.addLayer("Main");

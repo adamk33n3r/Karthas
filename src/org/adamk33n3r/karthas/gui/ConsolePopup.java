@@ -3,7 +3,7 @@ package org.adamk33n3r.karthas.gui;
 import org.adamk33n3r.karthas.Input;
 import org.adamk33n3r.karthas.gui.components.ConsoleComponent;
 
-public class Console extends Popup {
+public class ConsolePopup extends Popup {
 	
 	/**
 	 * Layer to get the user's input
@@ -11,7 +11,7 @@ public class Console extends Popup {
 	 * @param text - The {@code String} to edit
 	 * @param parent - The {@code Layer} to display underneath
 	 */
-	public Console(String prompt, StringBuilder text, Layer parent) {
+	public ConsolePopup(String prompt, StringBuilder text, Layer parent) {
 		super(parent, new ConsoleComponent(prompt, text, parent));
 	}
 	
