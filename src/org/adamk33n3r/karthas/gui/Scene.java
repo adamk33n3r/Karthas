@@ -36,7 +36,7 @@ public class Scene {
 			String line = "";
 			int length = 0;
 			for (String word : words) {
-				length = GUI.font.getWidth(line + word + " ");
+				length = Graphics.font.getWidth(line + word + " ");
 				if (length <= maxWidth && word.charAt(0) != '~')
 					line += word + " ";
 				else {

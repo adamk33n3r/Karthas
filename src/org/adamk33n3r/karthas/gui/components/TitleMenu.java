@@ -7,7 +7,6 @@ import org.adamk33n3r.karthas.gui.GUI;
 import org.adamk33n3r.karthas.gui.Menu;
 import org.adamk33n3r.karthas.gui.MenuItem;
 import org.adamk33n3r.karthas.gui.MenuItemAction;
-import org.adamk33n3r.karthas.gui.Popup;
 
 public class TitleMenu extends MenuComponent {
 	
@@ -30,7 +29,7 @@ public class TitleMenu extends MenuComponent {
 							Actor player = Karthas.init(input.toString());
 							Karthas.save(player, true);
 							System.out.println("dsdfa");
-							GUI.addLayer("Main");
+							GUI.addState("Main");
 						}
 					}
 					
@@ -52,9 +51,9 @@ public class TitleMenu extends MenuComponent {
 						if(!input.toString().equals("")) {
 							Karthas.load(input.toString(), true);
 							if (Karthas.getPlayer() != null)
-								GUI.addLayer("Main");
-							else
-								GUI.addLayer(new Popup(GUI.getCurrentLayer(), new TextComponent("Player does not exist", GUI.width / 2, GUI.height / 2, true)));
+								GUI.addState("Main");
+//							else
+//								new Popup(GUI.getCurrentState(), new TextComponent("Player does not exist", GUI.width / 2, GUI.height / 2, true));
 						}
 					}
 					

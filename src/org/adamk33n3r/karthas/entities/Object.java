@@ -1,6 +1,6 @@
 package org.adamk33n3r.karthas.entities;
 
-import org.adamk33n3r.karthas.gui.GUI;
+import org.adamk33n3r.karthas.gui.Graphics;
 import org.newdawn.slick.Color;
 
 /**
@@ -33,7 +33,7 @@ public class Object extends Entity{
 
 	@Override
 	public void render() {
-		GUI.drawChar(posx, posy, tile, Color.white, GUI.font);
+		Graphics.drawChar(posx, posy, tile, Color.white, Graphics.font);
 	}
 
 }

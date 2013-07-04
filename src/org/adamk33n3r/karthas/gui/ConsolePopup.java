@@ -1,6 +1,5 @@
 package org.adamk33n3r.karthas.gui;
 
-import org.adamk33n3r.karthas.Input;
 import org.adamk33n3r.karthas.gui.components.ConsoleComponent;
 
 public class ConsolePopup extends Popup {
@@ -11,8 +10,8 @@ public class ConsolePopup extends Popup {
 	 * @param text - The {@code String} to edit
 	 * @param parent - The {@code Layer} to display underneath
 	 */
-	public ConsolePopup(String prompt, StringBuilder text, Layer parent) {
-		super(parent, new ConsoleComponent(prompt, text, parent));
+	public ConsolePopup(String prompt, StringBuilder text) {
+		super(new ConsoleComponent(prompt, text));
 	}
 	
 	/*public static boolean confirm() { //TODO idk why this is in console
@@ -33,7 +32,6 @@ public class ConsolePopup extends Popup {
 	public void update() {
 		super.update();
 		if (!((ConsoleComponent) children[0]).isRunning()) {
-			Input.unlock(children[0]);
 			GUI.setInputCheck();
 			GUI.goBack();
 		}

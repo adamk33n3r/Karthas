@@ -1,6 +1,7 @@
 package org.adamk33n3r.karthas.gui.components;
 
 import org.adamk33n3r.karthas.Resources;
+import org.adamk33n3r.karthas.gui.Layer;
 import org.newdawn.slick.Sound;
 
 public class BGSoundComponent extends Component {
@@ -22,12 +23,12 @@ public class BGSoundComponent extends Component {
 		else
 			this.sound.play(pitch, vol);
 	}
-	
+
 	@Override
-	public void update() {
+	public void update(boolean canHandleInput) {
 		
 	}
-
+	
 	@Override
 	public void render() {
 		if (!playing) {

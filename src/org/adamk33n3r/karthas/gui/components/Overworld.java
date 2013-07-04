@@ -1,6 +1,5 @@
 package org.adamk33n3r.karthas.gui.components;
 
-
 import org.adamk33n3r.karthas.Area;
 import org.adamk33n3r.karthas.entities.*;
 import org.adamk33n3r.karthas.gui.GUI;
@@ -24,9 +23,9 @@ public class Overworld extends Component {
 	}
 	
 	@Override
-	public void update() {
-		this.width = GUI.width;
-		this.height = GUI.height - 200;
+	public void update(boolean canHandleInput) {
+		Overworld.width = GUI.width;
+		Overworld.height = GUI.height - 200;
 		area.update();
 	}
 	

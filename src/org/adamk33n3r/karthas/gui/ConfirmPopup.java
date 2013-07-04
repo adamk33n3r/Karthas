@@ -4,8 +4,8 @@ import org.adamk33n3r.karthas.gui.components.Component;
 
 public class ConfirmPopup extends Popup {
 
-	public ConfirmPopup(Layer parent, Component...componenets) {
-		super(parent, componenets);
+	public ConfirmPopup(Component...componenets) {
+		super(componenets);
 	}
 	
 }

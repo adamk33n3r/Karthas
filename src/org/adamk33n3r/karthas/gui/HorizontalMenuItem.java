@@ -26,12 +26,12 @@ public class HorizontalMenuItem extends MenuItem {
 		int x2 = x1 + size;
 		if(Resources.get(Resources.IMAGES.horizontalMenuItemBack) == null)
 			Resources.load(Resources.IMAGES.horizontalMenuItemBack,((ResizableImage) Resources.get(Resources.IMAGES.RESIZE.componentBack)).build(size, 25));
-		GUI.drawImage((Image) Resources.get(Resources.IMAGES.horizontalMenuItemBack), x1, y);
+		Graphics.drawImage((Image) Resources.get(Resources.IMAGES.horizontalMenuItemBack), x1, y);
 		if(selected) {
-			GUI.drawRect(x1 + 5, y + 5, x2, y + 25, this.selectedColor);
+			Graphics.drawRect(x1 + 5, y + 5, x2, y + 25, this.selectedColor);
 			fontColor = this.selectedFontColor;
 		}
-		GUI.drawStringCentered(x1 + size / 2, y, text, fontColor, GUI.font2);
+		Graphics.drawStringCentered(x1 + size / 2, y, text, fontColor, Graphics.font2);
 	}
 
 }

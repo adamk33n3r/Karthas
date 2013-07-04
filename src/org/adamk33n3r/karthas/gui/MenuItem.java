@@ -35,11 +35,11 @@ public class MenuItem extends Renderable implements Executable {
 	 */
 	public MenuItem(String text) {
 		this.text = text;
-		this.selectedColor = GUI.DEFAULT_SELECTED_MENU_COLOR;
-		this.disabledColor = GUI.DEFAULT_DISABLED_COLOR;
-		this.borderColor = GUI.DEFAULT_BORDER_COLOR;
-		this.fontColor = GUI.DEFAULT_FONT_COLOR;
-		this.selectedFontColor = GUI.DEFAULT_SELECTED_FONT_COLOR;
+		this.selectedColor = Graphics.DEFAULT_SELECTED_MENU_COLOR;
+		this.disabledColor = Graphics.DEFAULT_DISABLED_COLOR;
+		this.borderColor = Graphics.DEFAULT_BORDER_COLOR;
+		this.fontColor = Graphics.DEFAULT_FONT_COLOR;
+		this.selectedFontColor = Graphics.DEFAULT_SELECTED_FONT_COLOR;
 		if (!text.equals("Go Back")) {
 			this.function = new MenuItemAction() {
 				@Override
@@ -58,11 +58,11 @@ public class MenuItem extends Renderable implements Executable {
 	
 	public MenuItem(String text, MenuItemAction function) {
 		this.text = text;
-		this.selectedColor = GUI.DEFAULT_SELECTED_MENU_COLOR;
-		this.disabledColor = GUI.DEFAULT_DISABLED_COLOR;
-		this.borderColor = GUI.DEFAULT_BORDER_COLOR;
-		this.fontColor = GUI.DEFAULT_FONT_COLOR;
-		this.selectedFontColor = GUI.DEFAULT_SELECTED_FONT_COLOR;
+		this.selectedColor = Graphics.DEFAULT_SELECTED_MENU_COLOR;
+		this.disabledColor = Graphics.DEFAULT_DISABLED_COLOR;
+		this.borderColor = Graphics.DEFAULT_BORDER_COLOR;
+		this.fontColor = Graphics.DEFAULT_FONT_COLOR;
+		this.selectedFontColor = Graphics.DEFAULT_SELECTED_FONT_COLOR;
 		this.function = function;
 	}
 	
@@ -103,15 +103,15 @@ public class MenuItem extends Renderable implements Executable {
 		Color fontColor = this.selectedFontColor;
 		int y = GUI.height - parentMenu.getHeight() - 40 + (position * 35);
 		if(disabled)
-			GUI.drawRect(50, y, 50 + parentMenu.getWidth(), y + 20, this.disabledColor, 5, this.borderColor);
+			Graphics.drawRect(50, y, 50 + parentMenu.getWidth(), y + 20, this.disabledColor, 5, this.borderColor);
 		else
 			//GUI.drawResizableImage((ResizableImage) Resources.get("MenuItemBackScale"), 50, y - 5, 300, 30);
-			GUI.drawImage((Image) Resources.get(Resources.IMAGES.menuItemBack), 50, y - 5);
+			Graphics.drawImage((Image) Resources.get(Resources.IMAGES.menuItemBack), 50, y - 5);
 		if(selected)
-			GUI.drawRect(55, y, 55 + parentMenu.getWidth() - 5, y + 25, this.selectedColor);
+			Graphics.drawRect(55, y, 55 + parentMenu.getWidth() - 5, y + 25, this.selectedColor);
 		else
 			fontColor = this.fontColor;
-		GUI.drawString(50 + 35, y - 5, text, fontColor, GUI.font);
+		Graphics.drawString(50 + 35, y - 5, text, fontColor, Graphics.font);
 	}
 
 	/**

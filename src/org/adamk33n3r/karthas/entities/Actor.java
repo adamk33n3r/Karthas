@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.util.HashMap;
 
 import org.adamk33n3r.karthas.Karthas;
-import org.adamk33n3r.karthas.gui.GUI;
+import org.adamk33n3r.karthas.gui.Graphics;
 import org.newdawn.slick.Color;
 
 /**
@@ -178,7 +178,7 @@ public class Actor extends Entity {
 	
 	@Override
 	public void render() {
-		GUI.drawString(posx, posy, "#", Color.cyan, GUI.font);
+		Graphics.drawString(posx, posy, "#", Color.cyan, Graphics.font);
 	}
 	
 }

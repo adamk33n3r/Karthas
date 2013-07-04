@@ -2,7 +2,7 @@ package org.adamk33n3r.karthas.entities;
 
 import java.util.ArrayList;
 
-import org.adamk33n3r.karthas.gui.GUI;
+import org.adamk33n3r.karthas.gui.Graphics;
 import org.newdawn.slick.Color;
 
 public class Human extends Actor {
@@ -85,7 +85,7 @@ public class Human extends Actor {
 	
 	@Override
 	public void render() {
-		GUI.drawString(posx, posy, "#", Color.magenta, GUI.font);
+		Graphics.drawString(posx, posy, "#", Color.magenta, Graphics.font);
 	}
 	
 }

@@ -1,15 +1,17 @@
 package org.adamk33n3r.karthas.gui.components;
 
-//My imports
+// My imports
+import org.adamk33n3r.karthas.gui.InputHandler;
 import org.adamk33n3r.karthas.gui.Menu;
-import org.adamk33n3r.karthas.Input;
-import org.adamk33n3r.karthas.InputLockedException;
+import org.lwjgl.input.Keyboard;
 
 public abstract class MenuComponent extends Component {
+	
 	Menu menu;
 	
 	public MenuComponent() {
-		type = Component.Type.MENU;
+		this.type = Component.Type.MENU;
+		
 	}
 	
 	public Menu getMenu() {
@@ -17,11 +19,16 @@ public abstract class MenuComponent extends Component {
 	}
 	
 	@Override
-	public void update() {
-		try {
-			Input.processMenu(menu, this);
-		} catch (InputLockedException e) {
-			//e.printStackTrace();
+	public void update(boolean canHandleInput) {
+		//System.out.println(this + ":" + canHandleInput);
+		if (canHandleInput) {
+			if (InputHandler.isKeyDown(Keyboard.KEY_UP))
+				menu.prevItem();
+			if (InputHandler.isKeyDown(Keyboard.KEY_DOWN))
+				menu.nextItem();
+			if (InputHandler.isKeyDown(Keyboard.KEY_RETURN))
+				menu.getSelected().execute();
+			
 		}
 	}
 	

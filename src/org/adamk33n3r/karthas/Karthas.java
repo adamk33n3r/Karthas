@@ -2,17 +2,12 @@ package org.adamk33n3r.karthas;
 
 // Java imports
 import java.applet.Applet;
-import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import javax.swing.JFrame;
-
 // LWJGL
 import org.lwjgl.opengl.Display;
-import org.lwjgl.LWJGLException;
 
 // My own classes
 import org.adamk33n3r.karthas.entities.Actor;
@@ -63,7 +58,7 @@ public class Karthas extends Applet {
 	public void loop() {
 		System.out.println("Starting up...");
 
-		while (GUI.isRunning()) {
+		while (gui.isRunning()) {
 			gui.update();
 			gui.render();
 			

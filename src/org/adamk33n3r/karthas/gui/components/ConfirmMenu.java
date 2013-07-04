@@ -1,6 +1,7 @@
 package org.adamk33n3r.karthas.gui.components;
 
 import org.adamk33n3r.karthas.gui.HorizontalMenuItem;
+import org.adamk33n3r.karthas.gui.Layer;
 import org.adamk33n3r.karthas.gui.Menu;
 import org.adamk33n3r.karthas.gui.MenuItemAction;
 
@@ -23,6 +24,11 @@ public class ConfirmMenu extends HorizontalMenuComponent {
 			}
 			
 		}));
+	}
+
+	@Override
+	public void update(boolean canHandleInput) {
+		
 	}
 	
 }

@@ -35,7 +35,7 @@ public class Cutscene extends Renderable {
 
 	@Override
 	public void render() {
-		GUI.drawImageFullToScale(scenes.get(currentScene).scenes.get(0));
+		Graphics.drawImageFullToScale(scenes.get(currentScene).scenes.get(0));
 		if (timer == null) {
 			timer = new Thread() {
 				public boolean done = false;
@@ -58,8 +58,8 @@ public class Cutscene extends Renderable {
 		int x = 0;
 		for (Iterator<String> it = curText.lines.iterator(); it.hasNext();) {
 			String curLine = it.next();
-			GUI.drawString(150, GUI.height - 200 + x, curLine, GUI.DEFAULT_FONT_COLOR, GUI.font);
-			x += GUI.font.getLineHeight();
+			Graphics.drawString(150, GUI.height - 200 + x, curLine, Graphics.DEFAULT_FONT_COLOR, Graphics.font);
+			x += Graphics.font.getLineHeight();
 		}
 		if (change) {
 			currentText++;
